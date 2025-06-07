@@ -171,7 +171,7 @@ export default function SeguimientoPaciente() {
             </p>
 
             <p className="text-center text-xs text-gray-400 mt-8">
-              Sistema desarrollado exclusivamente para UDAP – Unidad Docente de Anestesiología · Córdoba
+              Sistema desarrollado exclusivamente para UDAP – Unidad de Dolor Agudo Postoperatorio · Córdoba
             </p>
           </motion.div>
         )}

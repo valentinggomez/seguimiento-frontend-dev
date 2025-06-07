@@ -72,7 +72,9 @@ export default function Home() {
   const copiarLink = () => {
     navigator.clipboard.writeText(link)
     setCopiado(true)
+    setTimeout(() => setCopiado(false), 2000)
   }
+
 
   const resetForm = () => {
     setForm({
@@ -194,12 +196,18 @@ export default function Home() {
                 {link}
               </div>
 
-              <button
+              <motion.button
                 onClick={copiarLink}
-                className="mt-5 px-6 py-2.5 text-white bg-[#004080] hover:bg-[#003466] transition rounded-lg shadow-md text-sm font-medium inline-flex items-center gap-2"
+                animate={copiado ? { scale: [1, 1.05, 1], backgroundColor: "#16a34a" } : {}}
+                transition={{ duration: 0.3 }}
+                className={`mt-5 px-6 py-2.5 rounded-lg text-white font-semibold transition-all shadow-md inline-flex items-center gap-2 ${
+                  copiado
+                    ? 'bg-green-600 hover:bg-green-700'
+                    : 'bg-[#004080] hover:bg-[#003466]'
+                }`}
               >
-                📎 {copiado ? 'Link copiado' : 'Copiar link'}
-              </button>
+                {copiado ? '✅ Link copiado' : '📋 Copiar link'}
+              </motion.button>
             </div>
 
             <button
