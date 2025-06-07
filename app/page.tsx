@@ -1,32 +1,36 @@
 'use client'
 import { useRouter } from 'next/navigation'
+import { FaUserPlus, FaHeartbeat } from 'react-icons/fa'
 
-export default function PanelPrincipal() {
+export default function Inicio() {
   const router = useRouter()
 
   return (
-    <main className="min-h-screen bg-gray-50 flex flex-col items-center justify-center px-4">
-      <div className="max-w-xl w-full bg-white shadow-xl rounded-2xl p-10 space-y-8 text-center">
-        <h1 className="text-2xl font-bold text-[#004080]">Sistema de Seguimiento UDAP</h1>
-        <p className="text-gray-600">Seleccioná una acción</p>
+    <main className="min-h-screen bg-gradient-to-br from-gray-100 to-white flex items-center justify-center px-4">
+      <div className="max-w-lg w-full bg-white border border-gray-200 rounded-3xl shadow-xl p-10 space-y-8">
+        <div className="text-center">
+          <h1 className="text-3xl font-bold text-[#004080] tracking-tight">Sistema de Seguimiento UDAP</h1>
+          <p className="mt-2 text-sm text-gray-500">Unidad de Dolor Agudo Postoperatorio</p>
+        </div>
 
-        <div className="grid gap-6">
+        <div className="space-y-5">
           <button
             onClick={() => router.push('/panel/registro')}
-            className="px-6 py-4 rounded-xl bg-[#004080] text-white font-semibold hover:bg-[#002e5c] shadow transition"
+            className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-xl bg-[#004080] text-white font-semibold hover:bg-[#003466] shadow-lg transition"
           >
-            🧾 Registrar nuevo paciente
+            <FaUserPlus className="text-lg" />
+            Registrar nuevo paciente
           </button>
 
           <button
             onClick={() => router.push('/panel/respuestas')}
-            className="px-6 py-4 rounded-xl bg-red-100 text-red-800 font-semibold hover:bg-red-200 shadow transition"
+            className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-xl bg-red-100 text-red-800 font-semibold hover:bg-red-200 shadow-md transition"
           >
-            🚨 Ver respuestas y alertas clínicas
+            <FaHeartbeat className="text-lg" />
+            Ver respuestas y alertas clínicas
           </button>
         </div>
       </div>
     </main>
   )
 }
-    
