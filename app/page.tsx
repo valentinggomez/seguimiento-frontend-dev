@@ -92,8 +92,8 @@ export default function Home() {
       <div className="w-full max-w-2xl bg-white rounded-3xl shadow-xl p-10 border border-gray-100">
         {/* ENCABEZADO */}
         <div className="flex flex-col items-center mb-10 text-center">
-          <h1 className="text-3xl font-bold text-[#1a2c45]">UDAP - Unidad de Dolor Agudo Postoperatorio</h1>
-          <p className="text-sm text-gray-500">Registro de pacientes · Seguimiento postoperatorio</p>
+          <h1 className="text-3xl font-bold text-[#1a2c45]">UDAP</h1>
+          <p className="text-sm text-gray-500">Unidad de Dolor Agudo Postoperatorio</p>
         </div>
 
         {!enviado ? (
