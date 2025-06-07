@@ -1,5 +1,8 @@
 import './globals.css'
-import ClientLayout from './ClientLayout'
+import { Inter } from 'next/font/google'
+import AnimatedLayout from './components/AnimatedLayout'
+
+const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
   title: 'Seguimiento Postoperatorio',
@@ -9,8 +12,8 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="es">
-      <body>
-        <ClientLayout>{children}</ClientLayout>
+      <body className={`${inter.className} bg-gray-50 text-gray-900 min-h-screen antialiased`}>
+        <AnimatedLayout>{children}</AnimatedLayout>
       </body>
     </html>
   )

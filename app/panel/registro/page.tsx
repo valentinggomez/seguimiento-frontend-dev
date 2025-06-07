@@ -2,16 +2,14 @@
 
 import { useState } from 'react'
 import { createClient } from '@supabase/supabase-js'
-import AnimatedLayout from '../../components/AnimatedLayout'
 import { motion } from 'framer-motion'
-import { AnimatePresence } from 'framer-motion'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 )
 
-export default function Home() {
+export default function RegistroPaciente() {
   const [form, setForm] = useState({
     nombre: '',
     dni: '',
@@ -22,7 +20,6 @@ export default function Home() {
     matricula_medico: ''
   })
 
-  const [errores, setErrores] = useState<{ [key: string]: boolean }>({})
   const [enviado, setEnviado] = useState(false)
   const [link, setLink] = useState('')
   const [copiado, setCopiado] = useState(false)
@@ -34,69 +31,37 @@ export default function Home() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    // Validación visual premium de campos vacíos
-    const campos = [
-      'nombre',
-      'dni',
-      'telefono',
-      'cirugia',
-      'fecha_cirugia',
-      'dni_medico',
-      'matricula_medico'
-    ]
-
-    const nuevosErrores: { [key: string]: boolean } = {}
-
-    campos.forEach((campo) => {
-      if ((form as any)[campo]?.trim() === '') {
-        nuevosErrores[campo] = true
-      }
-    })
-
-    // Validar que la fecha de cirugía no sea futura
-    const [dia, mes, anio] = form.fecha_cirugia.split('/')
-    const fechaIngresada = new Date(`${anio}-${mes}-${dia}`)
-    const hoy = new Date()
-    hoy.setHours(0, 0, 0, 0)
-
-    if (fechaIngresada > hoy) {
-      nuevosErrores['fecha_cirugia'] = true
-      nuevosErrores['fecha_cirugia'] = true
-      setErrores(nuevosErrores)
-      setTimeout(() => setErrores({}), 1500)
-    }
-
-    if (Object.keys(nuevosErrores).length > 0) {
-      setErrores(nuevosErrores)
-      setTimeout(() => setErrores({}), 1200)
+    const campos = Object.entries(form)
+    const vacios = campos.filter(([_, val]) => val.trim() === '')
+    if (vacios.length > 0) {
+      alert('⚠️ Por favor, completá todos los campos obligatorios.')
       return
     }
 
-    const fechaFormateada = `${anio}-${mes}-${dia}`
-
-    const nuevoPaciente = {
-      nombre: form.nombre,
-      dni: form.dni,
-      telefono: form.telefono,
-      cirugia: form.cirugia,
-      fecha_cirugia: fechaFormateada,
-      dni_medico: form.dni_medico,
-      matricula_medico: form.matricula_medico
+    const [d, m, y] = form.fecha_cirugia.split('/')
+    const fechaValida = new Date(`${y}-${m}-${d}`)
+    const hoy = new Date()
+    hoy.setHours(0, 0, 0, 0)
+    if (fechaValida > hoy) {
+      alert('⚠️ La fecha de cirugía no puede ser futura.')
+      return
     }
 
- 
-    const { data, error } = await supabase.from('pacientes').insert([nuevoPaciente]).select()
+    const paciente = {
+      ...form,
+      fecha_cirugia: `${y}-${m}-${d}`
+    }
 
-    if (data && data[0]) {
-      const nuevoId = data[0].id
-      const url = `${window.location.origin}/seguimiento/${nuevoId}`
-      setLink(url)
-      setEnviado(true)
-      setCopiado(false)
-     } else {
-      alert('❌ Error al registrar paciente')
+    const { data, error } = await supabase.from('pacientes').insert([paciente]).select()
+    if (error || !data || !data[0]) {
+      alert('❌ Error al guardar el paciente')
       console.error(error)
+      return
     }
+
+    const nuevoId = data[0].id
+    setLink(`${window.location.origin}/seguimiento/${nuevoId}`)
+    setEnviado(true)
   }
 
   const copiarLink = () => {
@@ -104,7 +69,6 @@ export default function Home() {
     setCopiado(true)
     setTimeout(() => setCopiado(false), 2000)
   }
-
 
   const resetForm = () => {
     setForm({
@@ -122,196 +86,88 @@ export default function Home() {
   }
 
   return (
-  <AnimatedLayout>
-    <main className="min-h-screen bg-[#f9fbfc] flex items-center justify-center px-4 py-10">
-      <div className="w-full max-w-2xl bg-white rounded-3xl shadow-xl p-10 border border-gray-100">
-        {/* ENCABEZADO */}
-        <div className="flex flex-col items-center mb-10 text-center">
-          <h1 className="text-3xl font-bold text-[#1a2c45]">UDAP</h1>
-          <p className="text-sm text-gray-500">Unidad de Dolor Agudo Postoperatorio</p>
+    <main className="min-h-screen bg-gradient-to-tr from-[#e8f0fa] via-white to-[#f5faff] px-4 py-14 flex items-center justify-center">
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="w-full max-w-2xl bg-white/90 border border-gray-200 backdrop-blur-md shadow-xl rounded-3xl p-10"
+      >
+        <div className="text-center mb-10">
+          <h1 className="text-4xl font-bold text-[#003466] tracking-tight">Registro de Paciente</h1>
+          <p className="text-sm text-gray-500 mt-1">Unidad de Dolor Agudo Postoperatorio (UDAP)</p>
         </div>
 
-        <div className="mb-6">
-          <a
-            href="/"
-            className="inline-block bg-white border border-gray-300 text-[#004080] px-4 py-2 rounded-lg shadow hover:bg-gray-50 transition"
-          >
-            ← Volver al inicio
-          </a>
-        </div>
-
-        <AnimatePresence mode="wait">
-          {!enviado ? (
-            <motion.form
-              key="formulario"
-              onSubmit={handleSubmit}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.4 }}
-              className="space-y-7"
-            >
-              {/* CAMPOS DEL FORMULARIO */}
-              {[
-                { name: 'nombre', label: 'Nombre completo', type: 'text' },
-                { name: 'dni', label: 'DNI', type: 'text' },
-                { name: 'telefono', label: 'Teléfono de contacto', type: 'tel' },
-                { name: 'cirugia', label: 'Tipo de cirugía', type: 'text' }
-              ].map(({ name, label, type }) => (
-                <div key={name} className="relative">
-                  <input
-                    type={type}
-                    name={name}
-                    value={(form as any)[name]}
-                    onChange={handleChange}
-                    required
-                    placeholder=" "
-                    autoComplete="off"
-                    className={`peer w-full px-3 pt-6 pb-2 border ${
-                      errores[name]
-                        ? 'border-red-500 shadow-sm shadow-red-100 animate-shake'
-                        : (form as any)[name].trim() === ''
-                        ? 'border-gray-300'
-                        : 'border-[#004080]'
-                    } rounded-xl bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#004080] transition-all`}
-                  />
-                  <label
-                    htmlFor={name}
-                    className="absolute left-3 top-2.5 text-sm text-gray-500 peer-focus:top-1 peer-focus:text-xs peer-focus:text-[#004080] peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 transition-all"
-                  >
-                    {label}
-                  </label>
-                </div>
-              ))}
-
-              {/* FECHA DE CIRUGÍA */}
-              <div className="relative">
+        {!enviado ? (
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {[
+              { name: 'nombre', label: 'Nombre completo' },
+              { name: 'dni', label: 'DNI' },
+              { name: 'telefono', label: 'Teléfono de contacto' },
+              { name: 'cirugia', label: 'Tipo de cirugía' },
+              { name: 'fecha_cirugia', label: 'Fecha de cirugía (dd/mm/aaaa)' },
+              { name: 'dni_medico', label: 'DNI del médico' },
+              { name: 'matricula_medico', label: 'Matrícula profesional' }
+            ].map(({ name, label }) => (
+              <div key={name} className="relative">
                 <input
                   type="text"
-                  name="fecha_cirugia"
-                  value={form.fecha_cirugia}
-                  onChange={(e) => {
-                    let val = e.target.value.replace(/\D/g, '')
-                    if (val.length >= 3 && val.length <= 4)
-                      val = val.replace(/(\d{2})(\d+)/, '$1/$2')
-                    else if (val.length >= 5)
-                      val = val.replace(/(\d{2})(\d{2})(\d+)/, '$1/$2/$3')
-                    setForm({ ...form, fecha_cirugia: val.slice(0, 10) })
-                  }}
-                  placeholder=" "
-                  maxLength={10}
+                  name={name}
+                  value={(form as any)[name]}
+                  onChange={handleChange}
                   required
-                  autoComplete="off"
-                  className={`peer w-full px-3 pt-6 pb-2 border-b-2 text-gray-800 bg-transparent focus:outline-none transition-all ${
-                    errores.fecha_cirugia
-                      ? 'border-red-500 focus:border-red-500'
-                      : 'border-gray-300 focus:border-[#004080]'
-                  }`}
+                  placeholder=" "
+                  className="peer w-full px-3 pt-6 pb-2 border border-gray-300 rounded-xl bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#004080] transition-all"
                 />
                 <label
-                  htmlFor="fecha_cirugia"
+                  htmlFor={name}
                   className="absolute left-3 top-2.5 text-sm text-gray-500 peer-focus:top-1 peer-focus:text-xs peer-focus:text-[#004080] peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 transition-all"
                 >
-                  Fecha de cirugía (dd/mm/aaaa)
+                  {label}
                 </label>
-                {errores.fecha_cirugia && (
-                  <p className="text-red-600 text-sm mt-1">
-                    La fecha no puede estar vacía ni ser futura.
-                  </p>
-                )}
               </div>
-
-              {/* FIRMA MÉDICA RESPONSABLE */}
-              <div className="border border-gray-200 rounded-xl p-4 shadow-sm bg-blue-50 mt-6">
-                <h3 className="text-[#004080] font-semibold mb-3 text-sm">Datos del médico responsable</h3>
-                {[
-                  { name: 'dni_medico', label: 'DNI del médico', type: 'text' },
-                  { name: 'matricula_medico', label: 'Matrícula profesional', type: 'text' }
-                ].map(({ name, label, type }) => (
-                  <div key={name} className="relative mb-5">
-                    <input
-                      type={type}
-                      name={name}
-                      value={(form as any)[name]}
-                      onChange={handleChange}
-                      required
-                      placeholder=" "
-                      autoComplete="off"
-                      className={`peer w-full px-3 pt-6 pb-2 border ${
-                        errores[name]
-                          ? 'border-red-500 shadow-sm shadow-red-100 animate-shake'
-                          : (form as any)[name].trim() === ''
-                          ? 'border-gray-300'
-                          : 'border-[#004080]'
-                      } rounded-xl bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#004080] transition-all`}
-                    />
-                    <label
-                      htmlFor={name}
-                      className="absolute left-3 top-2.5 text-sm text-gray-500 peer-focus:top-1 peer-focus:text-xs peer-focus:text-[#004080] peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 transition-all"
-                    >
-                      {label}
-                    </label>
-                  </div>
-                ))}
-              </div>
-
-              <button
-                type="submit"
-                className="w-full bg-[#004080] text-white py-3 rounded-lg hover:bg-[#002e5c] transition font-semibold shadow"
-              >
-                Guardar paciente y generar link
-              </button>
-            </motion.form>
-          ) : (
-            <motion.div
-              key="mensaje"
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -30 }}
-              transition={{ duration: 0.5 }}
-              className="space-y-8 text-center"
+            ))}
+            <button
+              type="submit"
+              className="w-full py-3 rounded-xl bg-[#004080] hover:bg-[#002e5c] text-white font-semibold transition shadow"
             >
-              <div className="border border-green-300 bg-green-50 rounded-2xl shadow-md px-6 py-8">
-                <div className="flex items-center justify-center gap-3 mb-3 text-green-700">
-                  <span className="text-4xl">✅</span>
-                  <h2 className="text-2xl font-bold tracking-tight">
-                    Paciente registrado correctamente
-                  </h2>
-                </div>
-
-                <p className="text-gray-700 mb-4 text-sm max-w-md mx-auto">
-                  Compartí este enlace con el paciente para que complete su formulario postoperatorio:
-                </p>
-
-                <div className="bg-white border border-gray-300 rounded-lg px-4 py-3 text-sm text-gray-800 font-mono break-words">
-                  {link}
-                </div>
-
-                <motion.button
-                  onClick={copiarLink}
-                  animate={copiado ? { scale: [1, 1.05, 1], backgroundColor: "#16a34a" } : {}}
-                  transition={{ duration: 0.3 }}
-                  className={`mt-5 px-6 py-2.5 rounded-lg text-white font-semibold transition-all shadow-md inline-flex items-center gap-2 ${
-                    copiado
-                      ? 'bg-green-600 hover:bg-green-700'
-                      : 'bg-[#004080] hover:bg-[#003466]'
-                  }`}
-                >
-                  {copiado ? '✅ Link copiado' : '📋 Copiar link'}
-                </motion.button>
+              Guardar paciente y generar link
+            </button>
+          </form>
+        ) : (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+            className="text-center space-y-6"
+          >
+            <div className="bg-green-50 border border-green-300 rounded-xl p-6 shadow">
+              <h2 className="text-xl font-semibold text-green-700 mb-2">✅ Paciente registrado</h2>
+              <p className="text-gray-700 text-sm mb-3">
+                Compartí este enlace con el paciente para completar el formulario postoperatorio:
+              </p>
+              <div className="font-mono bg-white border rounded-lg px-4 py-2 text-sm text-gray-800 break-words">
+                {link}
               </div>
-
               <button
-                onClick={resetForm}
-                className="inline-flex items-center justify-center gap-2 mt-4 px-5 py-2 rounded-lg bg-white border border-gray-300 text-[#004080] hover:bg-gray-50 hover:shadow transition font-medium"
+                onClick={copiarLink}
+                className={`mt-4 px-5 py-2 rounded-lg text-white font-medium transition shadow ${
+                  copiado ? 'bg-green-600' : 'bg-[#004080] hover:bg-[#003466]'
+                }`}
               >
-                + Cargar otro paciente
+                {copiado ? '✅ Link copiado' : '📋 Copiar link'}
               </button>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+            </div>
+
+            <button
+              onClick={resetForm}
+              className="inline-flex items-center justify-center gap-2 mt-4 px-5 py-2 rounded-lg bg-white border border-gray-300 text-[#004080] hover:bg-gray-50 hover:shadow transition font-medium"
+            >
+              + Cargar otro paciente
+            </button>
+          </motion.div>
+        )}
+      </motion.div>
     </main>
-  </AnimatedLayout>
-)
+  )
 }
