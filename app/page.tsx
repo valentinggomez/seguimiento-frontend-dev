@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import { createClient } from '@supabase/supabase-js'
+import { motion } from "framer-motion";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -149,36 +150,43 @@ export default function Home() {
             </button>
           </form>
         ) : (
-          <div className="space-y-8 text-center">
-            <div className="border border-[#cfe9dc] bg-[#f6fef9] rounded-2xl shadow-sm px-6 py-8">
-                <div className="flex items-center justify-center gap-2 mb-3 text-green-700">
-                <span className="text-xl">✅</span>
-                <h2 className="text-xl font-semibold tracking-tight">Paciente registrado correctamente</h2>
-                </div>
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="space-y-8 text-center"
+          >
+            <div className="border border-green-300 bg-green-50 rounded-2xl shadow-md px-6 py-8">
+              <div className="flex items-center justify-center gap-3 mb-3 text-green-700">
+                <span className="text-4xl">✅</span>
+                <h2 className="text-2xl font-bold tracking-tight">
+                  Paciente registrado correctamente
+                </h2>
+              </div>
 
-                <p className="text-gray-700 mb-4 text-sm">
-                Compartí el siguiente enlace con el paciente para que complete el formulario postoperatorio:
-                </p>
+              <p className="text-gray-700 mb-4 text-sm max-w-md mx-auto">
+                Compartí este enlace con el paciente para que complete su formulario postoperatorio:
+              </p>
 
-                <div className="bg-white border border-gray-300 rounded-lg px-4 py-3 text-sm text-gray-800 font-mono break-words">
+              <div className="bg-white border border-gray-300 rounded-lg px-4 py-3 text-sm text-gray-800 font-mono break-words">
                 {link}
-                </div>
+              </div>
 
-                <button
+              <button
                 onClick={copiarLink}
                 className="mt-5 px-6 py-2.5 text-white bg-[#004080] hover:bg-[#003466] transition rounded-lg shadow-md text-sm font-medium inline-flex items-center gap-2"
-                >
+              >
                 📎 {copiado ? 'Link copiado' : 'Copiar link'}
-                </button>
+              </button>
             </div>
 
             <button
-                onClick={resetForm}
-                className="inline-flex items-center justify-center gap-2 mt-4 px-5 py-2 rounded-lg bg-white border border-gray-300 text-[#004080] hover:bg-gray-50 hover:shadow transition font-medium"
-                >
-                <span className="text-lg"></span> Cargar otro paciente
-                </button>
-            </div>
+              onClick={resetForm}
+              className="inline-flex items-center justify-center gap-2 mt-4 px-5 py-2 rounded-lg bg-white border border-gray-300 text-[#004080] hover:bg-gray-50 hover:shadow transition font-medium"
+            >
+              + Cargar otro paciente
+            </button>
+          </motion.div>
         )}
       </div>
     </main>
