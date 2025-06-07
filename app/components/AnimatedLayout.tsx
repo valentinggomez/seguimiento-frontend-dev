@@ -1,23 +1,26 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 import { usePathname } from 'next/navigation'
-import { AnimatePresence, motion } from 'framer-motion'
+import { motion } from 'framer-motion'
 
 export default function AnimatedLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
+  const [isFirstLoad, setIsFirstLoad] = useState(true)
+
+  useEffect(() => {
+    setIsFirstLoad(false)
+  }, [])
 
   return (
-    <AnimatePresence mode="wait">
-      <motion.main
-        key={pathname}
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -10 }}
-        transition={{ duration: 0.35, ease: 'easeOut' }}
-        className="max-w-4xl mx-auto px-4 py-8"
-      >
-        {children}
-      </motion.main>
-    </AnimatePresence>
+    <motion.div
+      key={pathname}
+      initial={isFirstLoad ? false : { opacity: 0, y: 15 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: 'easeOut' }}
+      className="max-w-4xl mx-auto px-4 py-8"
+    >
+      {children}
+    </motion.div>
   )
 }
