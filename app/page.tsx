@@ -7,7 +7,7 @@ export default function Inicio() {
   const router = useRouter()
 
   return (
-    <main className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
+    <main className="min-h-screen bg-white-100 flex items-center justify-center px-4">
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
