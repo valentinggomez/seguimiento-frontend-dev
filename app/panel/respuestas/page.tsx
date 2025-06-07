@@ -59,7 +59,7 @@ export default function PanelRespuestas() {
                 <div className="text-sm text-gray-700 grid grid-cols-2 gap-x-6 gap-y-1">
                   <p><strong>Dolor 6h:</strong> {r.dolor_6h}</p>
                   <p><strong>Dolor 24h:</strong> {r.dolor_24h}</p>
-                  <p><strong>¿Dolor >7?</strong> {r.dolor_mayor_7}</p>
+                  <p><strong>¿Dolor mayor a 7?</strong> {r.dolor_mayor_7}</p>
                   <p><strong>Náuseas:</strong> {r.nauseas}</p>
                   <p><strong>Vómitos:</strong> {r.vomitos}</p>
                   <p><strong>Somnolencia:</strong> {r.somnolencia}</p>
