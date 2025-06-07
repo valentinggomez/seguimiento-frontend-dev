@@ -65,17 +65,28 @@ export default function SeguimientoPaciente() {
   return (
     <main className="min-h-screen bg-slate-50 py-10 px-4">
       <div className="max-w-2xl mx-auto bg-white p-8 rounded-2xl shadow-2xl border border-blue-200">
-        <div className="flex flex-col items-center mb-8">
-          <img src="/logo-reina.png" alt="Logo Clínica" className="h-20 mb-3" />
-          <h1 className="text-2xl font-bold text-blue-800">Seguimiento postoperatorio</h1>
-          <p className="text-sm text-gray-600">Clínica Reina Fabiola</p>
+        <div className="flex flex-col items-center text-center mb-8 mt-6">
+          <img
+            src="/logo-clinica.png"
+            alt="Logo Clínica Reina Fabiola"
+            className="w-24 h-24 mb-2"
+          />
+
+          <h1 className="text-3xl font-bold text-blue-800 tracking-tight">
+            Seguimiento postoperatorio
+          </h1>
+          <p className="text-sm text-gray-600 mt-1">
+            Clínica Reina Fabiola
+          </p>
         </div>
 
-        <div className="bg-blue-50 p-4 rounded-lg text-sm text-gray-800 mb-6 border border-blue-100 grid grid-cols-2 gap-4">
-          <div><strong>👤 Nombre:</strong> {paciente.nombre}</div>
-          <div><strong>🆔 DNI:</strong> {paciente.dni}</div>
-          <div><strong>🏥 Cirugía:</strong> {paciente.cirugia}</div>
-          <div><strong>📅 Fecha:</strong> {paciente.fecha_cirugia}</div>
+        <div className="w-full bg-blue-50 border border-blue-200 rounded-xl shadow-sm p-4 mb-8 text-sm sm:text-base">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-2 gap-x-4">
+            <p><strong>👤 Nombre:</strong> {paciente?.nombre}</p>
+            <p><strong>🆔 DNI:</strong> {paciente?.dni}</p>
+            <p><strong>🏥 Cirugía:</strong> {paciente?.cirugia}</p>
+            <p><strong>📅 Fecha:</strong> {paciente?.fecha}</p>
+          </div>
         </div>
 
         {!enviado ? (
