@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import AnimatedLayout from '../../components/AnimatedLayout'
 import { motion } from 'framer-motion'
+import { AnimatePresence } from 'framer-motion'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -121,7 +122,7 @@ export default function Home() {
   }
 
   return (
-    <AnimatedLayout>
+  <AnimatedLayout>
     <main className="min-h-screen bg-[#f9fbfc] flex items-center justify-center px-4 py-10">
       <div className="w-full max-w-2xl bg-white rounded-3xl shadow-xl p-10 border border-gray-100">
         {/* ENCABEZADO */}
@@ -138,165 +139,179 @@ export default function Home() {
             ← Volver al inicio
           </a>
         </div>
-        {!enviado ? (
-          <form onSubmit={handleSubmit} className="space-y-7">
-            {[
-              { name: 'nombre', label: 'Nombre completo', type: 'text' },
-              { name: 'dni', label: 'DNI', type: 'text' },
-              { name: 'telefono', label: 'Teléfono de contacto', type: 'tel' },
-              { name: 'cirugia', label: 'Tipo de cirugía', type: 'text' }
-            ].map(({ name, label, type }) => (
-              <div key={name} className="relative">
+
+        <AnimatePresence mode="wait">
+          {!enviado ? (
+            <motion.form
+              key="formulario"
+              onSubmit={handleSubmit}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.4 }}
+              className="space-y-7"
+            >
+              {/* CAMPOS DEL FORMULARIO */}
+              {[
+                { name: 'nombre', label: 'Nombre completo', type: 'text' },
+                { name: 'dni', label: 'DNI', type: 'text' },
+                { name: 'telefono', label: 'Teléfono de contacto', type: 'tel' },
+                { name: 'cirugia', label: 'Tipo de cirugía', type: 'text' }
+              ].map(({ name, label, type }) => (
+                <div key={name} className="relative">
+                  <input
+                    type={type}
+                    name={name}
+                    value={(form as any)[name]}
+                    onChange={handleChange}
+                    required
+                    placeholder=" "
+                    autoComplete="off"
+                    className={`peer w-full px-3 pt-6 pb-2 border ${
+                      errores[name]
+                        ? 'border-red-500 shadow-sm shadow-red-100 animate-shake'
+                        : (form as any)[name].trim() === ''
+                        ? 'border-gray-300'
+                        : 'border-[#004080]'
+                    } rounded-xl bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#004080] transition-all`}
+                  />
+                  <label
+                    htmlFor={name}
+                    className="absolute left-3 top-2.5 text-sm text-gray-500 peer-focus:top-1 peer-focus:text-xs peer-focus:text-[#004080] peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 transition-all"
+                  >
+                    {label}
+                  </label>
+                </div>
+              ))}
+
+              {/* FECHA DE CIRUGÍA */}
+              <div className="relative">
                 <input
-                  type={type}
-                  name={name}
-                  value={(form as any)[name]}
-                  onChange={handleChange}
-                  required
+                  type="text"
+                  name="fecha_cirugia"
+                  value={form.fecha_cirugia}
+                  onChange={(e) => {
+                    let val = e.target.value.replace(/\D/g, '')
+                    if (val.length >= 3 && val.length <= 4)
+                      val = val.replace(/(\d{2})(\d+)/, '$1/$2')
+                    else if (val.length >= 5)
+                      val = val.replace(/(\d{2})(\d{2})(\d+)/, '$1/$2/$3')
+                    setForm({ ...form, fecha_cirugia: val.slice(0, 10) })
+                  }}
                   placeholder=" "
+                  maxLength={10}
+                  required
                   autoComplete="off"
-                  className={`peer w-full px-3 pt-6 pb-2 border ${
-                    errores[name]
-                      ? 'border-red-500 shadow-sm shadow-red-100 animate-shake'
-                      : (form as any)[name].trim() === ''
-                      ? 'border-gray-300'
-                      : 'border-[#004080]'
-                  } rounded-xl bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#004080] transition-all`}
+                  className={`peer w-full px-3 pt-6 pb-2 border-b-2 text-gray-800 bg-transparent focus:outline-none transition-all ${
+                    errores.fecha_cirugia
+                      ? 'border-red-500 focus:border-red-500'
+                      : 'border-gray-300 focus:border-[#004080]'
+                  }`}
                 />
                 <label
-                  htmlFor={name}
+                  htmlFor="fecha_cirugia"
                   className="absolute left-3 top-2.5 text-sm text-gray-500 peer-focus:top-1 peer-focus:text-xs peer-focus:text-[#004080] peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 transition-all"
                 >
-                  {label}
+                  Fecha de cirugía (dd/mm/aaaa)
                 </label>
+                {errores.fecha_cirugia && (
+                  <p className="text-red-600 text-sm mt-1">
+                    La fecha no puede estar vacía ni ser futura.
+                  </p>
+                )}
               </div>
-            ))}
 
-                {/* CAMPO DE FECHA CON FORMATEO AUTOMÁTICO Y VALIDACIÓN VISUAL PREMIUM */}
-                  <div className="relative">
+              {/* FIRMA MÉDICA RESPONSABLE */}
+              <div className="border border-gray-200 rounded-xl p-4 shadow-sm bg-blue-50 mt-6">
+                <h3 className="text-[#004080] font-semibold mb-3 text-sm">Datos del médico responsable</h3>
+                {[
+                  { name: 'dni_medico', label: 'DNI del médico', type: 'text' },
+                  { name: 'matricula_medico', label: 'Matrícula profesional', type: 'text' }
+                ].map(({ name, label, type }) => (
+                  <div key={name} className="relative mb-5">
                     <input
-                      type="text"
-                      name="fecha_cirugia"
-                      value={form.fecha_cirugia}
-                      onChange={(e) => {
-                        let val = e.target.value.replace(/\D/g, '')
-                        if (val.length >= 3 && val.length <= 4)
-                          val = val.replace(/(\d{2})(\d+)/, '$1/$2')
-                        else if (val.length >= 5)
-                          val = val.replace(/(\d{2})(\d{2})(\d+)/, '$1/$2/$3')
-                        setForm({ ...form, fecha_cirugia: val.slice(0, 10) })
-                      }}
-                      placeholder=" "
-                      maxLength={10}
+                      type={type}
+                      name={name}
+                      value={(form as any)[name]}
+                      onChange={handleChange}
                       required
+                      placeholder=" "
                       autoComplete="off"
-                      className={`peer w-full px-3 pt-6 pb-2 border-b-2 text-gray-800 bg-transparent focus:outline-none transition-all
-                        ${
-                          errores.fecha_cirugia
-                            ? 'border-red-500 focus:border-red-500'
-                            : 'border-gray-300 focus:border-[#004080]'
-                        }`}
+                      className={`peer w-full px-3 pt-6 pb-2 border ${
+                        errores[name]
+                          ? 'border-red-500 shadow-sm shadow-red-100 animate-shake'
+                          : (form as any)[name].trim() === ''
+                          ? 'border-gray-300'
+                          : 'border-[#004080]'
+                      } rounded-xl bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#004080] transition-all`}
                     />
                     <label
-                      htmlFor="fecha_cirugia"
+                      htmlFor={name}
                       className="absolute left-3 top-2.5 text-sm text-gray-500 peer-focus:top-1 peer-focus:text-xs peer-focus:text-[#004080] peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 transition-all"
                     >
-                      Fecha de cirugía (dd/mm/aaaa)
+                      {label}
                     </label>
-                    {errores.fecha_cirugia && (
-                      <p className="text-red-600 text-sm mt-1">
-                        La fecha no puede estar vacía ni ser futura.
-                      </p>
-                    )}
                   </div>
-                {/* FIRMA MÉDICA RESPONSABLE */}
-                <div className="border border-gray-200 rounded-xl p-4 shadow-sm bg-blue-50 mt-6">
-                  <h3 className="text-[#004080] font-semibold mb-3 text-sm">Datos del médico responsable</h3>
-
-                  {[
-                    { name: 'dni_medico', label: 'DNI del médico', type: 'text' },
-                    { name: 'matricula_medico', label: 'Matrícula profesional', type: 'text' }
-                  ].map(({ name, label, type }) => (
-                    <div key={name} className="relative mb-5">
-                      <input
-                        type={type}
-                        name={name}
-                        value={(form as any)[name]}
-                        onChange={handleChange}
-                        required
-                        placeholder=" "
-                        autoComplete="off"
-                        className={`peer w-full px-3 pt-6 pb-2 border ${
-                          errores[name]
-                            ? 'border-red-500 shadow-sm shadow-red-100 animate-shake'
-                            : (form as any)[name].trim() === ''
-                            ? 'border-gray-300'
-                            : 'border-[#004080]'
-                        } rounded-xl bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#004080] transition-all`}
-                      />
-                      <label
-                        htmlFor={name}
-                        className="absolute left-3 top-2.5 text-sm text-gray-500 peer-focus:top-1 peer-focus:text-xs peer-focus:text-[#004080] peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 transition-all"
-                      >
-                        {label}
-                      </label>
-                    </div>
                 ))}
-                </div>
-            <button
-              type="submit"
-              className="w-full bg-[#004080] text-white py-3 rounded-lg hover:bg-[#002e5c] transition font-semibold shadow"
-            >
-              Guardar paciente y generar link
-            </button>
-          </form>
-        ) : (
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="space-y-8 text-center"
-          >
-            <div className="border border-green-300 bg-green-50 rounded-2xl shadow-md px-6 py-8">
-              <div className="flex items-center justify-center gap-3 mb-3 text-green-700">
-                <span className="text-4xl">✅</span>
-                <h2 className="text-2xl font-bold tracking-tight">
-                  Paciente registrado correctamente
-                </h2>
               </div>
 
-              <p className="text-gray-700 mb-4 text-sm max-w-md mx-auto">
-                Compartí este enlace con el paciente para que complete su formulario postoperatorio:
-              </p>
-
-              <div className="bg-white border border-gray-300 rounded-lg px-4 py-3 text-sm text-gray-800 font-mono break-words">
-                {link}
-              </div>
-
-              <motion.button
-                onClick={copiarLink}
-                animate={copiado ? { scale: [1, 1.05, 1], backgroundColor: "#16a34a" } : {}}
-                transition={{ duration: 0.3 }}
-                className={`mt-5 px-6 py-2.5 rounded-lg text-white font-semibold transition-all shadow-md inline-flex items-center gap-2 ${
-                  copiado
-                    ? 'bg-green-600 hover:bg-green-700'
-                    : 'bg-[#004080] hover:bg-[#003466]'
-                }`}
+              <button
+                type="submit"
+                className="w-full bg-[#004080] text-white py-3 rounded-lg hover:bg-[#002e5c] transition font-semibold shadow"
               >
-                {copiado ? '✅ Link copiado' : '📋 Copiar link'}
-              </motion.button>
-            </div>
-
-            <button
-              onClick={resetForm}
-              className="inline-flex items-center justify-center gap-2 mt-4 px-5 py-2 rounded-lg bg-white border border-gray-300 text-[#004080] hover:bg-gray-50 hover:shadow transition font-medium"
+                Guardar paciente y generar link
+              </button>
+            </motion.form>
+          ) : (
+            <motion.div
+              key="mensaje"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -30 }}
+              transition={{ duration: 0.5 }}
+              className="space-y-8 text-center"
             >
-              + Cargar otro paciente
-            </button>
-          </motion.div>
-        )}
+              <div className="border border-green-300 bg-green-50 rounded-2xl shadow-md px-6 py-8">
+                <div className="flex items-center justify-center gap-3 mb-3 text-green-700">
+                  <span className="text-4xl">✅</span>
+                  <h2 className="text-2xl font-bold tracking-tight">
+                    Paciente registrado correctamente
+                  </h2>
+                </div>
+
+                <p className="text-gray-700 mb-4 text-sm max-w-md mx-auto">
+                  Compartí este enlace con el paciente para que complete su formulario postoperatorio:
+                </p>
+
+                <div className="bg-white border border-gray-300 rounded-lg px-4 py-3 text-sm text-gray-800 font-mono break-words">
+                  {link}
+                </div>
+
+                <motion.button
+                  onClick={copiarLink}
+                  animate={copiado ? { scale: [1, 1.05, 1], backgroundColor: "#16a34a" } : {}}
+                  transition={{ duration: 0.3 }}
+                  className={`mt-5 px-6 py-2.5 rounded-lg text-white font-semibold transition-all shadow-md inline-flex items-center gap-2 ${
+                    copiado
+                      ? 'bg-green-600 hover:bg-green-700'
+                      : 'bg-[#004080] hover:bg-[#003466]'
+                  }`}
+                >
+                  {copiado ? '✅ Link copiado' : '📋 Copiar link'}
+                </motion.button>
+              </div>
+
+              <button
+                onClick={resetForm}
+                className="inline-flex items-center justify-center gap-2 mt-4 px-5 py-2 rounded-lg bg-white border border-gray-300 text-[#004080] hover:bg-gray-50 hover:shadow transition font-medium"
+              >
+                + Cargar otro paciente
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </main>
   </AnimatedLayout>
-  )
+)
 }

@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import AnimatedLayout from '../../components/AnimatedLayout' 
+import { motion, AnimatePresence } from 'framer-motion'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -72,7 +73,7 @@ export default function PanelRespuestas() {
     valor === 'true' ? 'Sí' : valor === 'false' ? 'No' : valor
 
   return (
-    <AnimatedLayout>
+  <AnimatedLayout>
     <main className="min-h-screen bg-gray-100 p-6">
       <div className="max-w-5xl mx-auto">
         <h1 className="text-2xl font-bold text-[#004080] mb-6">📄 Respuestas postoperatorias</h1>
@@ -86,43 +87,70 @@ export default function PanelRespuestas() {
           </a>
         </div>
 
-        {cargando ? (
-          <p className="text-gray-600">Cargando respuestas...</p>
-        ) : respuestas.length === 0 ? (
-          <p className="text-gray-600">No hay respuestas aún.</p>
-        ) : (
-          <div className="grid gap-4">
-            {respuestas.map((r) => {
-              const estaAbierto = abierto === r.id
-              return (
-                <div key={r.id} className="bg-white rounded-xl shadow">
-                  <button
-                    onClick={() => setAbierto(estaAbierto ? null : r.id)}
-                    className={`w-full flex justify-between items-center p-4 text-left font-semibold text-[#004080] hover:bg-gray-50 rounded-t-xl`}
-                  >
-                    <span>🧾 Seguimiento de {obtenerNombre(r.paciente_id)}</span>
-                    <span className="text-sm text-gray-500">{formatearFecha(r.fecha_respuesta)}</span>
-                  </button>
+        <AnimatePresence mode="wait">
+          {cargando ? (
+            <motion.p
+              key="cargando"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.3 }}
+              className="text-gray-600"
+            >
+              Cargando respuestas...
+            </motion.p>
+          ) : respuestas.length === 0 ? (
+            <motion.p
+              key="vacio"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.3 }}
+              className="text-gray-600"
+            >
+              No hay respuestas aún.
+            </motion.p>
+          ) : (
+            <motion.div
+              key="lista"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.4 }}
+              className="grid gap-4"
+            >
+              {respuestas.map((r) => {
+                const estaAbierto = abierto === r.id
+                return (
+                  <div key={r.id} className="bg-white rounded-xl shadow">
+                    <button
+                      onClick={() => setAbierto(estaAbierto ? null : r.id)}
+                      className="w-full flex justify-between items-center p-4 text-left font-semibold text-[#004080] hover:bg-gray-50 rounded-t-xl"
+                    >
+                      <span>🧾 Seguimiento de {obtenerNombre(r.paciente_id)}</span>
+                      <span className="text-sm text-gray-500">{formatearFecha(r.fecha_respuesta)}</span>
+                    </button>
 
-                  {estaAbierto && (
-                    <div className="px-5 pb-4 text-sm text-gray-700 grid grid-cols-2 gap-x-6 gap-y-1">
-                      <p><strong>Dolor 6h:</strong> {r.dolor_6h}</p>
-                      <p><strong>Dolor 24h:</strong> {r.dolor_24h}</p>
-                      <p><strong>¿Dolor mayor a 7?</strong> {mostrarSiNo(r.dolor_mayor_7)}</p>
-                      <p><strong>Náuseas:</strong> {mostrarSiNo(r.nauseas)}</p>
-                      <p><strong>Vómitos:</strong> {mostrarSiNo(r.vomitos)}</p>
-                      <p><strong>Somnolencia:</strong> {mostrarSiNo(r.somnolencia)}</p>
-                      <p><strong>Satisfacción:</strong> {r.satisfaccion}</p>
-                      <p><strong>Observaciones:</strong> {r.observaciones || '–'}</p>
-                    </div>
-                  )}
-                </div>
-              )
-            })}
-          </div>
-        )}
+                    {estaAbierto && (
+                      <div className="px-5 pb-4 text-sm text-gray-700 grid grid-cols-2 gap-x-6 gap-y-1">
+                        <p><strong>Dolor 6h:</strong> {r.dolor_6h}</p>
+                        <p><strong>Dolor 24h:</strong> {r.dolor_24h}</p>
+                        <p><strong>¿Dolor mayor a 7?</strong> {mostrarSiNo(r.dolor_mayor_7)}</p>
+                        <p><strong>Náuseas:</strong> {mostrarSiNo(r.nauseas)}</p>
+                        <p><strong>Vómitos:</strong> {mostrarSiNo(r.vomitos)}</p>
+                        <p><strong>Somnolencia:</strong> {mostrarSiNo(r.somnolencia)}</p>
+                        <p><strong>Satisfacción:</strong> {r.satisfaccion}</p>
+                        <p><strong>Observaciones:</strong> {r.observaciones || '–'}</p>
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
-     </main>
+    </main>
   </AnimatedLayout>
 )
 }
