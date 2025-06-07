@@ -29,6 +29,7 @@ export default function SeguimientoPaciente() {
   const [paciente, setPaciente] = useState<any>(null)
   const [respuestas, setRespuestas] = useState<string[]>(Array(preguntas.length).fill(''))
   const [enviado, setEnviado] = useState(false)
+  const [cargando, setCargando] = useState(false);
 
   useEffect(() => {
     const fetchPaciente = async () => {
@@ -48,9 +49,11 @@ export default function SeguimientoPaciente() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (cargando) return; // Evita envíos múltiples
+    setCargando(true);
+
     const errores: string[] = [];
 
-    // Validación de campos de dolor
     for (let i = 0; i <= 1; i++) {
       const valor = Number(respuestas[i]);
       if (isNaN(valor) || valor < 0 || valor > 10) {
@@ -58,12 +61,10 @@ export default function SeguimientoPaciente() {
       }
     }
 
-    // Validación de largo máximo en observaciones
     if (respuestas[10] && respuestas[10].length > 500) {
       errores.push('La observación no puede superar los 500 caracteres.');
     }
 
-    // Validación de campos vacíos en todo el formulario
     const vacios = respuestas.some(r => r.trim() === '');
     if (vacios) {
       errores.push('Por favor completá todas las respuestas antes de enviar el formulario.');
@@ -71,14 +72,11 @@ export default function SeguimientoPaciente() {
 
     if (errores.length > 0) {
       alert(errores.join('\n'));
+      setCargando(false);
       return;
     }
 
-    const body = {
-      paciente_id: id,
-      respuestas
-    };
-
+    const body = { paciente_id: id, respuestas };
     let intentos = 0;
     let exito = false;
 
@@ -109,6 +107,8 @@ export default function SeguimientoPaciente() {
     if (!exito) {
       alert('No se pudo guardar la respuesta. Por favor, intentá de nuevo más tarde.');
     }
+
+    setCargando(false);
   };
 
   if (!paciente) return <p className="text-center py-20">Cargando datos del paciente...</p>
@@ -210,9 +210,12 @@ export default function SeguimientoPaciente() {
 
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white py-3 font-semibold rounded-xl shadow-md hover:bg-blue-700 transition-all"
+              disabled={cargando}
+              className={`w-full py-3 font-semibold rounded-xl shadow-md transition-all ${
+                cargando ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 text-white'
+              }`}
             >
-              Enviar seguimiento
+              {cargando ? 'Enviando...' : 'Enviar seguimiento'}
             </button>
           </form>
         ) : (
