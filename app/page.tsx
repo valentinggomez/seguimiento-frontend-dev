@@ -203,8 +203,7 @@ export default function Home() {
 
                   {[
                     { name: 'dni_medico', label: 'DNI del médico', type: 'text' },
-                    { name: 'matricula_medico', label: 'Matrícula profesional', type: 'text' },
-                    { name: 'especialidad_medico', label: 'Especialidad médica', type: 'text' }
+                    { name: 'matricula_medico', label: 'Matrícula profesional', type: 'text' }
                   ].map(({ name, label, type }) => (
                     <div key={name} className="relative mb-5">
                       <input
@@ -230,9 +229,8 @@ export default function Home() {
                         {label}
                       </label>
                     </div>
-                  ))}
+                ))}
                 </div>
-
             <button
               type="submit"
               className="w-full bg-[#004080] text-white py-3 rounded-lg hover:bg-[#002e5c] transition font-semibold shadow"
