@@ -144,6 +144,7 @@ export default function SeguimientoPaciente() {
               <textarea
                 value={respuestas[10]}
                 onChange={e => handleChange(10, e.target.value)}
+                required
                 rows={3}
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               />
