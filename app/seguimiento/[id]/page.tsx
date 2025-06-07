@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import { createClient } from '@supabase/supabase-js'
+import { motion } from "framer-motion"
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -71,7 +72,7 @@ export default function SeguimientoPaciente() {
             Seguimiento postoperatorio - UDAP
           </h1>
           <p className="text-sm text-gray-600 mt-1">
-            UDAP · Unidad Docente de Anestesiología de Córdoba
+            Unidad de Dolor Agudo Postoperatorio
           </p>
         </div>
 
@@ -153,17 +154,30 @@ export default function SeguimientoPaciente() {
             </button>
           </form>
         ) : (
-          <div className="flex flex-col items-center justify-center text-center bg-white border border-green-300 rounded-2xl shadow-lg p-8 mt-10">
-            <span className="text-green-600 text-5xl mb-3">✅</span>
-            <h2 className="text-2xl font-bold text-green-700 mb-1">¡Seguimiento enviado!</h2>
-            <p className="text-gray-800 text-base">Tus respuestas han sido recibidas por nuestro equipo médico.</p>
-            <p className="text-center text-sm text-gray-600 mt-2">
-              Si tenés dudas o síntomas, comunicate con el equipo de UDAP.
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="flex flex-col items-center justify-center text-center bg-white border border-green-300 rounded-2xl shadow-2xl p-10 mt-10"
+          >
+            <span className="text-green-600 text-6xl mb-4">✅</span>
+
+            <h2 className="text-3xl font-bold text-green-700 mb-2 tracking-tight">
+              ¡Seguimiento enviado con éxito!
+            </h2>
+
+            <p className="text-gray-800 text-base max-w-md">
+              Tus respuestas han sido registradas correctamente y serán evaluadas por el equipo de UDAP.
             </p>
-            <p className="text-center text-xs text-gray-400 mt-10">
+
+            <p className="text-gray-600 text-sm mt-3 max-w-md">
+              Si tenés dudas, síntomas o querés agregar algo más, no dudes en comunicarte con nuestro equipo.
+            </p>
+
+            <p className="text-center text-xs text-gray-400 mt-8">
               Sistema desarrollado exclusivamente para UDAP – Unidad Docente de Anestesiología · Córdoba
             </p>
-          </div>
+          </motion.div>
         )}
       </div>
     </main>
