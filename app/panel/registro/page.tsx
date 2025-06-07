@@ -1,9 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import Image from 'next/image'
 import { createClient } from '@supabase/supabase-js'
 import AnimatedLayout from '../../components/AnimatedLayout'
+import { motion } from 'framer-motion'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -251,7 +251,12 @@ export default function Home() {
             </button>
           </form>
         ) : (
-          <div className="space-y-8 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="space-y-8 text-center"
+          >
             <div className="border border-green-300 bg-green-50 rounded-2xl shadow-md px-6 py-8">
               <div className="flex items-center justify-center gap-3 mb-3 text-green-700">
                 <span className="text-4xl">✅</span>
