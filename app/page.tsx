@@ -48,7 +48,9 @@ export default function Home() {
 
     if (fechaIngresada > hoy) {
       nuevosErrores['fecha_cirugia'] = true
-      alert('❌ La fecha de cirugía no puede ser en el futuro.')
+      nuevosErrores['fecha_cirugia'] = true
+      setErrores(nuevosErrores)
+      setTimeout(() => setErrores({}), 1500)
     }
 
     if (Object.keys(nuevosErrores).length > 0) {
@@ -141,7 +143,7 @@ export default function Home() {
               </div>
             ))}
 
-                {/* CAMPO DE FECHA CON FORMATEO AUTOMÁTICO Y VALIDACIÓN VISUAL */}
+                {/* CAMPO DE FECHA CON FORMATEO AUTOMÁTICO Y VALIDACIÓN VISUAL PREMIUM */}
                   <div className="relative">
                     <input
                       type="text"
@@ -149,12 +151,10 @@ export default function Home() {
                       value={form.fecha_cirugia}
                       onChange={(e) => {
                         let val = e.target.value.replace(/\D/g, '')
-
                         if (val.length >= 3 && val.length <= 4)
                           val = val.replace(/(\d{2})(\d+)/, '$1/$2')
                         else if (val.length >= 5)
                           val = val.replace(/(\d{2})(\d{2})(\d+)/, '$1/$2/$3')
-
                         setForm({ ...form, fecha_cirugia: val.slice(0, 10) })
                       }}
                       placeholder=" "
@@ -175,7 +175,9 @@ export default function Home() {
                       Fecha de cirugía (dd/mm/aaaa)
                     </label>
                     {errores.fecha_cirugia && (
-                      <p className="text-red-600 text-sm mt-1">No puede estar vacía ni ser futura.</p>
+                      <p className="text-red-600 text-sm mt-1">
+                        La fecha no puede estar vacía ni ser futura.
+                      </p>
                     )}
                   </div>
 
