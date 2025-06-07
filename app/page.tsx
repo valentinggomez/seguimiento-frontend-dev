@@ -79,9 +79,10 @@ export default function Home() {
       telefono: form.telefono,
       cirugia: form.cirugia,
       fecha_cirugia: fechaFormateada,
-      firma_dni: form.dni_medico,
-      firma_matricula: form.matricula_medico
+      dni_medico: form.dni_medico,
+      matricula_medico: form.matricula_medico
     }
+
  
     const { data, error } = await supabase.from('pacientes').insert([nuevoPaciente]).select()
 
