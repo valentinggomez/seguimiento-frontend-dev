@@ -49,6 +49,7 @@ export default function SeguimientoPaciente() {
 
     const errores: string[] = [];
 
+    // Validación de campos de dolor
     for (let i = 0; i <= 1; i++) {
       const valor = Number(respuestas[i]);
       if (isNaN(valor) || valor < 0 || valor > 10) {
@@ -56,8 +57,15 @@ export default function SeguimientoPaciente() {
       }
     }
 
+    // Validación de largo máximo en observaciones
     if (respuestas[10] && respuestas[10].length > 500) {
       errores.push('La observación no puede superar los 500 caracteres.');
+    }
+
+    // Validación de campos vacíos en todo el formulario
+    const vacios = respuestas.some(r => r.trim() === '');
+    if (vacios) {
+      errores.push('Por favor completá todas las respuestas antes de enviar el formulario.');
     }
 
     if (errores.length > 0) {
