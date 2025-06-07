@@ -50,7 +50,7 @@ export default function PanelRespuestas() {
           <p className="text-gray-600">No hay respuestas aún.</p>
         ) : (
           <div className="grid gap-4">
-            {respuestas.map((r) => (
+            {respuestas.map((r) => ( 
               <div key={r.id} className="bg-white rounded-xl shadow p-5">
                 <div className="flex justify-between items-center mb-2">
                   <h2 className="font-semibold text-[#004080]">🧾 Seguimiento ID #{r.id}</h2>
