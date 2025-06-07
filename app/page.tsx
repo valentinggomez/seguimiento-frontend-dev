@@ -92,18 +92,7 @@ export default function Home() {
       setLink(url)
       setEnviado(true)
       setCopiado(false)
-
-      // 📝 Log clínico
-      await fetch('/api/log', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          accion: 'crear_paciente',
-          detalle: `📝 Se registró al paciente ${form.nombre} (DNI: ${form.dni})`,
-          usuario: form.dni_medico
-        })
-      })
-    } else {
+     } else {
       alert('❌ Error al registrar paciente')
       console.error(error)
     }
