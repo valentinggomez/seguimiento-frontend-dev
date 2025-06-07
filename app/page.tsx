@@ -78,7 +78,7 @@ export default function Home() {
         {/* ENCABEZADO */}
         <div className="flex flex-col items-center mb-10 text-center">
           <Image
-            src="/logo-reina.png"
+            src="/logo-clinica.png"
             alt="Logo Clínica Reina Fabiola"
             width={90}
             height={90}
