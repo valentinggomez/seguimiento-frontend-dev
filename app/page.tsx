@@ -74,8 +74,13 @@ export default function Home() {
     const fechaFormateada = `${anio}-${mes}-${dia}`
 
     const nuevoPaciente = {
-      ...form,
-      fecha_cirugia: fechaFormateada
+      nombre: form.nombre,
+      dni: form.dni,
+      telefono: form.telefono,
+      cirugia: form.cirugia,
+      fecha_cirugia: fechaFormateada,
+      firma_dni: form.dni_medico,
+      firma_matricula: form.matricula_medico
     }
 
     const { data, error } = await supabase.from('pacientes').insert([nuevoPaciente]).select()
