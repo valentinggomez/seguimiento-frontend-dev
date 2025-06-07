@@ -129,20 +129,32 @@ export default function SeguimientoPaciente() {
         {!enviado ? (
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Inputs numéricos */}
-            {[0, 1].map(i => (
-              <div key={i}>
-                <label className="block text-gray-700 font-medium mb-1">{preguntas[i]}</label>
-                <input
-                  type="number"
-                  min={0}
-                  max={10}
-                  value={respuestas[i]}
-                  onChange={e => handleChange(i, e.target.value)}
-                  required
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-            ))}
+            {[0, 1].map(i => {
+              const valor = Number(respuestas[i])
+              const invalido = respuestas[i] !== '' && (isNaN(valor) || valor < 0 || valor > 10)
+
+              return (
+                <div key={i}>
+                  <label className="block text-gray-700 font-medium mb-1">{preguntas[i]}</label>
+                  <input
+                    type="number"
+                    min={0}
+                    max={10}
+                    value={respuestas[i]}
+                    onChange={e => handleChange(i, e.target.value)}
+                    required
+                    className={`w-full p-3 border rounded-lg focus:ring-2 transition-all ${
+                      invalido
+                        ? 'border-red-500 ring-red-400 focus:ring-red-400'
+                        : 'border-gray-300 focus:ring-blue-500'
+                    }`}
+                  />
+                  {invalido && (
+                    <p className="text-red-600 text-sm mt-1">Ingresá un número entre 0 y 10</p>
+                  )}
+                </div>
+              )
+            })}
 
             {/* Selects */}
             {[2, 3, 4, 5, 6, 7, 8].map(i => (

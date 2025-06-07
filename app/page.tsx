@@ -40,14 +40,23 @@ export default function Home() {
       }
     })
 
+    // Validar que la fecha de cirugía no sea futura
+    const [dia, mes, anio] = form.fecha_cirugia.split('/')
+    const fechaIngresada = new Date(`${anio}-${mes}-${dia}`)
+    const hoy = new Date()
+    hoy.setHours(0, 0, 0, 0)
+
+    if (fechaIngresada > hoy) {
+      nuevosErrores['fecha_cirugia'] = true
+      alert('❌ La fecha de cirugía no puede ser en el futuro.')
+    }
+
     if (Object.keys(nuevosErrores).length > 0) {
       setErrores(nuevosErrores)
-      setTimeout(() => setErrores({}), 1000)
+      setTimeout(() => setErrores({}), 1200)
       return
     }
 
-    // Formatear fecha dd/mm/yyyy → yyyy-mm-dd
-    const [dia, mes, anio] = form.fecha_cirugia.split('/')
     const fechaFormateada = `${anio}-${mes}-${dia}`
 
     const nuevoPaciente = {
@@ -132,39 +141,43 @@ export default function Home() {
               </div>
             ))}
 
-                {/* CAMPO DE FECHA CON FORMATEO AUTOMÁTICO */}
-                <div className="relative">
-                  <input
-                    type="text"
-                    name="fecha_cirugia"
-                    value={form.fecha_cirugia}
-                    onChange={(e) => {
-                      let val = e.target.value.replace(/\D/g, '')
+                {/* CAMPO DE FECHA CON FORMATEO AUTOMÁTICO Y VALIDACIÓN VISUAL */}
+                  <div className="relative">
+                    <input
+                      type="text"
+                      name="fecha_cirugia"
+                      value={form.fecha_cirugia}
+                      onChange={(e) => {
+                        let val = e.target.value.replace(/\D/g, '')
 
-                      if (val.length >= 3 && val.length <= 4)
-                        val = val.replace(/(\d{2})(\d+)/, '$1/$2')
-                      else if (val.length >= 5)
-                        val = val.replace(/(\d{2})(\d{2})(\d+)/, '$1/$2/$3')
+                        if (val.length >= 3 && val.length <= 4)
+                          val = val.replace(/(\d{2})(\d+)/, '$1/$2')
+                        else if (val.length >= 5)
+                          val = val.replace(/(\d{2})(\d{2})(\d+)/, '$1/$2/$3')
 
-                      setForm({ ...form, fecha_cirugia: val.slice(0, 10) })
-                    }}
-                    placeholder=" "
-                    maxLength={10}
-                    required
-                    autoComplete="off"
-                    className={`peer w-full px-3 pt-6 pb-2 border-b-2 ${
-                      form.fecha_cirugia && form.fecha_cirugia.length < 10
-                        ? 'border-red-400'
-                        : 'border-gray-300'
-                    } text-gray-800 bg-transparent focus:outline-none focus:border-[#004080] transition-all`}
-                  />
-                  <label
-                    htmlFor="fecha_cirugia"
-                    className="absolute left-3 top-2.5 text-sm text-gray-500 peer-focus:top-1 peer-focus:text-xs peer-focus:text-[#004080] peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 transition-all"
-                  >
-                    Fecha de cirugía (dd/mm/aaaa)
-                  </label>
-                </div>
+                        setForm({ ...form, fecha_cirugia: val.slice(0, 10) })
+                      }}
+                      placeholder=" "
+                      maxLength={10}
+                      required
+                      autoComplete="off"
+                      className={`peer w-full px-3 pt-6 pb-2 border-b-2 text-gray-800 bg-transparent focus:outline-none transition-all
+                        ${
+                          errores.fecha_cirugia
+                            ? 'border-red-500 focus:border-red-500'
+                            : 'border-gray-300 focus:border-[#004080]'
+                        }`}
+                    />
+                    <label
+                      htmlFor="fecha_cirugia"
+                      className="absolute left-3 top-2.5 text-sm text-gray-500 peer-focus:top-1 peer-focus:text-xs peer-focus:text-[#004080] peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 transition-all"
+                    >
+                      Fecha de cirugía (dd/mm/aaaa)
+                    </label>
+                    {errores.fecha_cirugia && (
+                      <p className="text-red-600 text-sm mt-1">No puede estar vacía ni ser futura.</p>
+                    )}
+                  </div>
 
             <button
               type="submit"
