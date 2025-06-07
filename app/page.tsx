@@ -16,8 +16,12 @@ export default function Home() {
     dni: '',
     telefono: '',
     cirugia: '',
-    fecha_cirugia: ''
+    fecha_cirugia: '',
+    dni_medico: '',
+    matricula_medico: '',
+    especialidad_medico: ''
   })
+
   const [errores, setErrores] = useState<{ [key: string]: boolean }>({})
   const [enviado, setEnviado] = useState(false)
   const [link, setLink] = useState('')
@@ -31,7 +35,17 @@ export default function Home() {
     e.preventDefault()
 
     // Validación visual premium de campos vacíos
-    const campos = ['nombre', 'dni', 'telefono', 'cirugia', 'fecha_cirugia']
+    const campos = [
+      'nombre',
+      'dni',
+      'telefono',
+      'cirugia',
+      'fecha_cirugia',
+      'dni_medico',
+      'matricula_medico',
+      'especialidad_medico'
+    ]
+
     const nuevosErrores: { [key: string]: boolean } = {}
 
     campos.forEach((campo) => {
@@ -93,7 +107,10 @@ export default function Home() {
       dni: '',
       telefono: '',
       cirugia: '',
-      fecha_cirugia: ''
+      fecha_cirugia: '',
+      dni_medico: '',
+      matricula_medico: '',
+      especialidad_medico: ''
     })
     setEnviado(false)
     setLink('')
@@ -180,6 +197,41 @@ export default function Home() {
                       </p>
                     )}
                   </div>
+                {/* FIRMA MÉDICA RESPONSABLE */}
+                <div className="border border-gray-200 rounded-xl p-4 shadow-sm bg-blue-50 mt-6">
+                  <h3 className="text-[#004080] font-semibold mb-3 text-sm">Datos del médico responsable</h3>
+
+                  {[
+                    { name: 'dni_medico', label: 'DNI del médico', type: 'text' },
+                    { name: 'matricula_medico', label: 'Matrícula profesional', type: 'text' },
+                    { name: 'especialidad_medico', label: 'Especialidad médica', type: 'text' }
+                  ].map(({ name, label, type }) => (
+                    <div key={name} className="relative mb-5">
+                      <input
+                        type={type}
+                        name={name}
+                        value={(form as any)[name]}
+                        onChange={handleChange}
+                        required
+                        placeholder=" "
+                        autoComplete="off"
+                        className={`peer w-full px-3 pt-6 pb-2 border ${
+                          errores[name]
+                            ? 'border-red-500 shadow-sm shadow-red-100 animate-shake'
+                            : (form as any)[name].trim() === ''
+                            ? 'border-gray-300'
+                            : 'border-[#004080]'
+                        } rounded-xl bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#004080] transition-all`}
+                      />
+                      <label
+                        htmlFor={name}
+                        className="absolute left-3 top-2.5 text-sm text-gray-500 peer-focus:top-1 peer-focus:text-xs peer-focus:text-[#004080] peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 transition-all"
+                      >
+                        {label}
+                      </label>
+                    </div>
+                  ))}
+                </div>
 
             <button
               type="submit"
