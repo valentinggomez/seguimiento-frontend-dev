@@ -1,36 +1,46 @@
 'use client'
 import { useRouter } from 'next/navigation'
 import { FaUserPlus, FaHeartbeat } from 'react-icons/fa'
+import { motion } from 'framer-motion'
 
 export default function Inicio() {
   const router = useRouter()
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-gray-100 to-white flex items-center justify-center px-4">
-      <div className="max-w-lg w-full bg-white border border-gray-200 rounded-3xl shadow-xl p-10 space-y-8">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold text-[#004080] tracking-tight">Sistema de Seguimiento UDAP</h1>
-          <p className="mt-2 text-sm text-gray-500">Unidad de Dolor Agudo Postoperatorio</p>
+    <main className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="max-w-xl w-full bg-white border border-gray-200 rounded-3xl shadow-2xl p-10 space-y-10"
+      >
+        <div className="text-center space-y-2">
+          <h1 className="text-4xl font-bold text-[#004080] tracking-tight">Sistema UDAP</h1>
+          <p className="text-sm text-gray-500">Unidad de Dolor Agudo Postoperatorio</p>
         </div>
 
-        <div className="space-y-5">
-          <button
+        <div className="space-y-6">
+          <motion.button
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.98 }}
             onClick={() => router.push('/panel/registro')}
-            className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-xl bg-[#004080] text-white font-semibold hover:bg-[#003466] shadow-lg transition"
+            className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-xl bg-[#004080] text-white font-semibold hover:bg-[#002e5c] shadow-lg transition-all"
           >
-            <FaUserPlus className="text-lg" />
+            <FaUserPlus className="text-xl" />
             Registrar nuevo paciente
-          </button>
+          </motion.button>
 
-          <button
+          <motion.button
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.98 }}
             onClick={() => router.push('/panel/respuestas')}
-            className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-xl bg-red-100 text-red-800 font-semibold hover:bg-red-200 shadow-md transition"
+            className="w-full flex items-center justify-center gap-3 px-6 py-4 rounded-xl bg-red-100 text-red-800 font-semibold hover:bg-red-200 shadow-md transition-all"
           >
-            <FaHeartbeat className="text-lg" />
+            <FaHeartbeat className="text-xl" />
             Ver respuestas y alertas clínicas
-          </button>
+          </motion.button>
         </div>
-      </div>
+      </motion.div>
     </main>
   )
 }
