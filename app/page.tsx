@@ -113,13 +113,13 @@ export default function Home() {
                   required
                   placeholder=" "
                   autoComplete="off"
-                  className={`peer w-full px-3 pt-6 pb-2 border-b-2 ${
+                  className={`peer w-full px-3 pt-6 pb-2 border ${
                     errores[name]
-                      ? 'border-red-500 animate-shake'
+                      ? 'border-red-500 shadow-sm shadow-red-100 animate-shake'
                       : (form as any)[name].trim() === ''
-                      ? 'border-red-400'
-                      : 'border-gray-300'
-                  } text-gray-800 bg-transparent focus:outline-none focus:border-[#004080] transition-all`}
+                      ? 'border-gray-300'
+                      : 'border-[#004080]'
+                  } rounded-xl bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#004080] transition-all`}
                 />
                 <label
                   htmlFor={name}

@@ -167,10 +167,6 @@ export default function SeguimientoPaciente() {
             </h2>
 
             <p className="text-gray-800 text-base max-w-md">
-              Tus respuestas han sido registradas correctamente y serán evaluadas por el equipo de UDAP.
-            </p>
-
-            <p className="text-gray-600 text-sm mt-3 max-w-md">
               Si tenés dudas, síntomas o querés agregar algo más, no dudes en comunicarte con nuestro equipo.
             </p>
 
