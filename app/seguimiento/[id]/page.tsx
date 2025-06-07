@@ -44,6 +44,7 @@ export default function SeguimientoPaciente() {
     setRespuestas(nuevas)
   }
 
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
