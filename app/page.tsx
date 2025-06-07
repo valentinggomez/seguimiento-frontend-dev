@@ -82,7 +82,7 @@ export default function Home() {
       firma_dni: form.dni_medico,
       firma_matricula: form.matricula_medico
     }
-
+ 
     const { data, error } = await supabase.from('pacientes').insert([nuevoPaciente]).select()
 
     if (data && data[0]) {
