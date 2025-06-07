@@ -160,6 +160,9 @@ export default function SeguimientoPaciente() {
             <p className="text-center text-sm text-gray-600 mt-2">
               Si tenés dudas o síntomas, comunicate con el equipo de UDAP.
             </p>
+            <p className="text-center text-xs text-gray-400 mt-10">
+              Sistema desarrollado exclusivamente para UDAP – Unidad Docente de Anestesiología · Córdoba
+            </p>
           </div>
         )}
       </div>
