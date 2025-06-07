@@ -287,10 +287,10 @@ export default function Home() {
           </motion.div>
         )}
       </div>
-      <div className="mt-8 flex justify-center">
+      <div className="mb-6">
         <a
           href="/"
-          className="inline-flex items-center gap-2 px-5 py-2 rounded-xl border border-gray-300 text-[#004080] bg-white hover:bg-gray-50 hover:shadow transition font-medium"
+          className="inline-block bg-white border border-gray-300 text-[#004080] px-4 py-2 rounded-lg shadow hover:bg-gray-50 transition"
         >
           ← Volver al inicio
         </a>
