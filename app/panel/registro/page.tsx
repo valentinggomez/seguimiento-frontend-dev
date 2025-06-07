@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import Image from 'next/image'
 import { createClient } from '@supabase/supabase-js'
-import { motion } from "framer-motion";
+import AnimatedLayout from '../../components/AnimatedLayout'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -121,6 +121,7 @@ export default function Home() {
   }
 
   return (
+    <AnimatedLayout>
     <main className="min-h-screen bg-[#f9fbfc] flex items-center justify-center px-4 py-10">
       <div className="w-full max-w-2xl bg-white rounded-3xl shadow-xl p-10 border border-gray-100">
         {/* ENCABEZADO */}
@@ -250,12 +251,7 @@ export default function Home() {
             </button>
           </form>
         ) : (
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="space-y-8 text-center"
-          >
+          <div className="space-y-8 text-center">
             <div className="border border-green-300 bg-green-50 rounded-2xl shadow-md px-6 py-8">
               <div className="flex items-center justify-center gap-3 mb-3 text-green-700">
                 <span className="text-4xl">✅</span>
@@ -296,5 +292,6 @@ export default function Home() {
         )}
       </div>
     </main>
+  </AnimatedLayout>
   )
 }
