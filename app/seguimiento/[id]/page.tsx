@@ -140,15 +140,17 @@ export default function SeguimientoPaciente() {
 
             <button
               type="submit"
-              className="w-full bg-blue-600 text-white py-3 font-semibold rounded-lg hover:bg-blue-700 transition-all"
+              className="w-full bg-blue-600 text-white py-3 font-semibold rounded-xl shadow-md hover:bg-blue-700 transition-all"
             >
               Enviar seguimiento
             </button>
           </form>
         ) : (
-          <div className="bg-green-100 p-6 rounded-lg text-center shadow mt-10">
-            <h2 className="text-xl font-semibold text-green-800 mb-2">✅ ¡Gracias por completar el seguimiento!</h2>
-            <p className="text-gray-700">Tus respuestas fueron enviadas correctamente.</p>
+          <div className="flex flex-col items-center justify-center text-center bg-white border border-green-300 rounded-2xl shadow-lg p-8 mt-10">
+            <span className="text-green-600 text-5xl mb-3">✅</span>
+            <h2 className="text-2xl font-bold text-green-700 mb-1">¡Seguimiento enviado!</h2>
+            <p className="text-gray-800 text-base">Tus respuestas han sido recibidas por nuestro equipo médico.</p>
+            <p className="text-gray-500 text-sm mt-2">Si tenés dudas, no dudes en comunicarte con la clínica.</p>
           </div>
         )}
       </div>
