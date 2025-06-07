@@ -18,8 +18,7 @@ export default function Home() {
     cirugia: '',
     fecha_cirugia: '',
     dni_medico: '',
-    matricula_medico: '',
-    especialidad_medico: ''
+    matricula_medico: ''
   })
 
   const [errores, setErrores] = useState<{ [key: string]: boolean }>({})
@@ -42,8 +41,7 @@ export default function Home() {
       'cirugia',
       'fecha_cirugia',
       'dni_medico',
-      'matricula_medico',
-      'especialidad_medico'
+      'matricula_medico'
     ]
 
     const nuevosErrores: { [key: string]: boolean } = {}
@@ -109,8 +107,7 @@ export default function Home() {
       cirugia: '',
       fecha_cirugia: '',
       dni_medico: '',
-      matricula_medico: '',
-      especialidad_medico: ''
+      matricula_medico: ''
     })
     setEnviado(false)
     setLink('')
