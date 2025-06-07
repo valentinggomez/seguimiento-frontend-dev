@@ -12,7 +12,7 @@ export default function PanelPrincipal() {
 
         <div className="grid gap-6">
           <button
-            onClick={() => router.push('/')}
+            onClick={() => router.push('/panel/registro')}
             className="px-6 py-4 rounded-xl bg-[#004080] text-white font-semibold hover:bg-[#002e5c] shadow transition"
           >
             🧾 Registrar nuevo paciente
