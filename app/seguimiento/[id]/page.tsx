@@ -45,21 +45,62 @@ export default function SeguimientoPaciente() {
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
+
+    const errores: string[] = [];
+
+    for (let i = 0; i <= 1; i++) {
+      const valor = Number(respuestas[i]);
+      if (isNaN(valor) || valor < 0 || valor > 10) {
+        errores.push(`La respuesta de dolor "${preguntas[i]}" debe ser un número entre 0 y 10.`);
+      }
+    }
+
+    if (respuestas[10] && respuestas[10].length > 500) {
+      errores.push('La observación no puede superar los 500 caracteres.');
+    }
+
+    if (errores.length > 0) {
+      alert(errores.join('\n'));
+      return;
+    }
+
     const body = {
       paciente_id: id,
       respuestas
+    };
+
+    let intentos = 0;
+    let exito = false;
+
+    while (intentos < 2 && !exito) {
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/respuestas`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body)
+        });
+
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+          setEnviado(true);
+          exito = true;
+        } else {
+          console.warn('❌ Falló el envío:', data);
+          intentos++;
+        }
+
+      } catch (error) {
+        console.error('❌ Error en fetch:', error);
+        intentos++;
+      }
     }
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/respuestas`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body)
-    })
-
-    if (res.ok) setEnviado(true)
-    else alert('Error al enviar la respuesta.')
-  }
+    if (!exito) {
+      alert('No se pudo guardar la respuesta. Por favor, intentá de nuevo más tarde.');
+    }
+  };
 
   if (!paciente) return <p className="text-center py-20">Cargando datos del paciente...</p>
 
