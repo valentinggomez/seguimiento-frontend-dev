@@ -46,7 +46,7 @@ export default function SeguimientoPaciente() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     const body = {
-      paciente_id: Number(id),
+      paciente_id: id,
       respuestas
     }
 

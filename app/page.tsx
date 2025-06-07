@@ -138,8 +138,12 @@ export default function Home() {
                     value={form.fecha_cirugia}
                     onChange={(e) => {
                       let val = e.target.value.replace(/\D/g, '')
-                      if (val.length >= 3 && val.length <= 4) val = val.replace(/(\d{2})(\d+)/, '$1/$2')
-                      if (val.length >= 5) val = val.replace(/(\d{2})\/(\d{2})(\d+)/, '$1/$2/$3')
+
+                      if (val.length >= 3 && val.length <= 4)
+                        val = val.replace(/(\d{2})(\d+)/, '$1/$2')
+                      else if (val.length >= 5)
+                        val = val.replace(/(\d{2})(\d{2})(\d+)/, '$1/$2/$3')
+
                       setForm({ ...form, fecha_cirugia: val.slice(0, 10) })
                     }}
                     placeholder=" "
