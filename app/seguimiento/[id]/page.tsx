@@ -66,17 +66,12 @@ export default function SeguimientoPaciente() {
     <main className="min-h-screen bg-slate-50 py-10 px-4">
       <div className="max-w-2xl mx-auto bg-white p-8 rounded-2xl shadow-2xl border border-blue-200">
         <div className="flex flex-col items-center text-center mb-8 mt-6">
-          <img
-            src="/logo-clinica.png"
-            alt="Logo Clínica Reina Fabiola"
-            className="w-24 h-24 mb-2"
-          />
 
           <h1 className="text-3xl font-bold text-blue-800 tracking-tight">
-            Seguimiento postoperatorio
+            Seguimiento postoperatorio - UDAP
           </h1>
           <p className="text-sm text-gray-600 mt-1">
-            Clínica Reina Fabiola
+            UDAP · Unidad Docente de Anestesiología de Córdoba
           </p>
         </div>
 
@@ -162,7 +157,9 @@ export default function SeguimientoPaciente() {
             <span className="text-green-600 text-5xl mb-3">✅</span>
             <h2 className="text-2xl font-bold text-green-700 mb-1">¡Seguimiento enviado!</h2>
             <p className="text-gray-800 text-base">Tus respuestas han sido recibidas por nuestro equipo médico.</p>
-            <p className="text-gray-500 text-sm mt-2">Si tenés dudas, no dudes en comunicarte con la clínica.</p>
+            <p className="text-center text-sm text-gray-600 mt-2">
+              Si tenés dudas o síntomas, comunicate con el equipo de UDAP.
+            </p>
           </div>
         )}
       </div>

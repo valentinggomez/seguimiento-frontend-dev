@@ -18,7 +18,7 @@ export default function Home() {
     cirugia: '',
     fecha_cirugia: ''
   })
-
+  const [errores, setErrores] = useState<{ [key: string]: boolean }>({})
   const [enviado, setEnviado] = useState(false)
   const [link, setLink] = useState('')
   const [copiado, setCopiado] = useState(false)
@@ -30,29 +30,44 @@ export default function Home() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    // Convertir fecha de dd/mm/yyyy → yyyy-mm-dd
+    // Validación visual premium de campos vacíos
+    const campos = ['nombre', 'dni', 'telefono', 'cirugia', 'fecha_cirugia']
+    const nuevosErrores: { [key: string]: boolean } = {}
+
+    campos.forEach((campo) => {
+      if ((form as any)[campo]?.trim() === '') {
+        nuevosErrores[campo] = true
+      }
+    })
+
+    if (Object.keys(nuevosErrores).length > 0) {
+      setErrores(nuevosErrores)
+      setTimeout(() => setErrores({}), 1000)
+      return
+    }
+
+    // Formatear fecha dd/mm/yyyy → yyyy-mm-dd
     const [dia, mes, anio] = form.fecha_cirugia.split('/')
     const fechaFormateada = `${anio}-${mes}-${dia}`
 
     const nuevoPaciente = {
-        ...form,
-        fecha_cirugia: fechaFormateada
+      ...form,
+      fecha_cirugia: fechaFormateada
     }
 
     const { data, error } = await supabase.from('pacientes').insert([nuevoPaciente]).select()
 
     if (data && data[0]) {
-        const nuevoId = data[0].id
-        const url = `${window.location.origin}/seguimiento/${nuevoId}`
-        setLink(url)
-        setEnviado(true)
-        setCopiado(false)
+      const nuevoId = data[0].id
+      const url = `${window.location.origin}/seguimiento/${nuevoId}`
+      setLink(url)
+      setEnviado(true)
+      setCopiado(false)
     } else {
-        alert('❌ Error al registrar paciente')
-        console.error(error)
+      alert('❌ Error al registrar paciente')
+      console.error(error)
     }
   }
-
 
   const copiarLink = () => {
     navigator.clipboard.writeText(link)
@@ -77,69 +92,72 @@ export default function Home() {
       <div className="w-full max-w-2xl bg-white rounded-3xl shadow-xl p-10 border border-gray-100">
         {/* ENCABEZADO */}
         <div className="flex flex-col items-center mb-10 text-center">
-          <Image
-            src="/logo-clinica.png"
-            alt="Logo Clínica Reina Fabiola"
-            width={90}
-            height={90}
-            className="mb-4"
-          />
-          <h1 className="text-3xl font-bold text-[#1a2c45]">Clínica Reina Fabiola</h1>
-          <p className="text-sm text-gray-500">Panel Médico · Seguimiento Postoperatorio</p>
+          <h1 className="text-3xl font-bold text-[#1a2c45]">UDAP - Unidad de Dolor Agudo Postoperatorio</h1>
+          <p className="text-sm text-gray-500">Registro de pacientes · Seguimiento postoperatorio</p>
         </div>
 
         {!enviado ? (
           <form onSubmit={handleSubmit} className="space-y-7">
             {[
-                { name: 'nombre', label: 'Nombre completo', type: 'text' },
-                { name: 'dni', label: 'DNI', type: 'text' },
-                { name: 'telefono', label: 'Teléfono de contacto', type: 'tel' },
-                { name: 'cirugia', label: 'Tipo de cirugía', type: 'text' }
-                ].map(({ name, label, type }) => (
-                <div key={name} className="relative">
-                    <input
-                    type={type}
-                    name={name}
-                    value={(form as any)[name]}
-                    onChange={handleChange}
-                    required
-                    placeholder=" "
-                    autoComplete="off"
-                    className="peer w-full px-3 pt-6 pb-2 border-b-2 border-gray-300 text-gray-800 bg-transparent focus:outline-none focus:border-[#004080] transition-all"
-                    />
-                    <label
-                    htmlFor={name}
-                    className="absolute left-3 top-2.5 text-sm text-gray-500 peer-focus:top-1 peer-focus:text-xs peer-focus:text-[#004080] peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 transition-all"
-                    >
-                    {label}
-                    </label>
-                </div>
-                ))}
+              { name: 'nombre', label: 'Nombre completo', type: 'text' },
+              { name: 'dni', label: 'DNI', type: 'text' },
+              { name: 'telefono', label: 'Teléfono de contacto', type: 'tel' },
+              { name: 'cirugia', label: 'Tipo de cirugía', type: 'text' }
+            ].map(({ name, label, type }) => (
+              <div key={name} className="relative">
+                <input
+                  type={type}
+                  name={name}
+                  value={(form as any)[name]}
+                  onChange={handleChange}
+                  required
+                  placeholder=" "
+                  autoComplete="off"
+                  className={`peer w-full px-3 pt-6 pb-2 border-b-2 ${
+                    errores[name]
+                      ? 'border-red-500 animate-shake'
+                      : (form as any)[name].trim() === ''
+                      ? 'border-red-400'
+                      : 'border-gray-300'
+                  } text-gray-800 bg-transparent focus:outline-none focus:border-[#004080] transition-all`}
+                />
+                <label
+                  htmlFor={name}
+                  className="absolute left-3 top-2.5 text-sm text-gray-500 peer-focus:top-1 peer-focus:text-xs peer-focus:text-[#004080] peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 transition-all"
+                >
+                  {label}
+                </label>
+              </div>
+            ))}
 
                 {/* CAMPO DE FECHA CON FORMATEO AUTOMÁTICO */}
                 <div className="relative">
-                <input
+                  <input
                     type="text"
                     name="fecha_cirugia"
                     value={form.fecha_cirugia}
                     onChange={(e) => {
-                    let val = e.target.value.replace(/\D/g, '')
-                    if (val.length > 2) val = val.slice(0, 2) + '/' + val.slice(2)
-                    if (val.length > 5) val = val.slice(0, 5) + '/' + val.slice(5, 9)
-                    setForm({ ...form, fecha_cirugia: val })
+                      let val = e.target.value.replace(/\D/g, '')
+                      if (val.length >= 3 && val.length <= 4) val = val.replace(/(\d{2})(\d+)/, '$1/$2')
+                      if (val.length >= 5) val = val.replace(/(\d{2})\/(\d{2})(\d+)/, '$1/$2/$3')
+                      setForm({ ...form, fecha_cirugia: val.slice(0, 10) })
                     }}
+                    placeholder=" "
                     maxLength={10}
                     required
-                    placeholder=" "
                     autoComplete="off"
-                    className="peer w-full px-3 pt-6 pb-2 border-b-2 border-gray-300 text-gray-800 bg-transparent focus:outline-none focus:border-[#004080] transition-all"
-                />
-                <label
+                    className={`peer w-full px-3 pt-6 pb-2 border-b-2 ${
+                      form.fecha_cirugia && form.fecha_cirugia.length < 10
+                        ? 'border-red-400'
+                        : 'border-gray-300'
+                    } text-gray-800 bg-transparent focus:outline-none focus:border-[#004080] transition-all`}
+                  />
+                  <label
                     htmlFor="fecha_cirugia"
                     className="absolute left-3 top-2.5 text-sm text-gray-500 peer-focus:top-1 peer-focus:text-xs peer-focus:text-[#004080] peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 transition-all"
-                >
+                  >
                     Fecha de cirugía (dd/mm/aaaa)
-                </label>
+                  </label>
                 </div>
 
             <button
