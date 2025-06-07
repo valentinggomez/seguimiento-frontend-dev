@@ -129,6 +129,14 @@ export default function Home() {
           <p className="text-sm text-gray-500">Unidad de Dolor Agudo Postoperatorio</p>
         </div>
 
+        <div className="mb-6">
+          <a
+            href="/"
+            className="inline-block bg-white border border-gray-300 text-[#004080] px-4 py-2 rounded-lg shadow hover:bg-gray-50 transition"
+          >
+            ← Volver al inicio
+          </a>
+        </div>
         {!enviado ? (
           <form onSubmit={handleSubmit} className="space-y-7">
             {[
@@ -286,14 +294,6 @@ export default function Home() {
             </button>
           </motion.div>
         )}
-      </div>
-      <div className="mb-6">
-        <a
-          href="/"
-          className="inline-block bg-white border border-gray-300 text-[#004080] px-4 py-2 rounded-lg shadow hover:bg-gray-50 transition"
-        >
-          ← Volver al inicio
-        </a>
       </div>
     </main>
   )
