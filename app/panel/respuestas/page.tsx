@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { createClient } from '@supabase/supabase-js'
+import AnimatedLayout from '../../components/AnimatedLayout' 
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -71,6 +72,7 @@ export default function PanelRespuestas() {
     valor === 'true' ? 'Sí' : valor === 'false' ? 'No' : valor
 
   return (
+    <AnimatedLayout>
     <main className="min-h-screen bg-gray-100 p-6">
       <div className="max-w-5xl mx-auto">
         <h1 className="text-2xl font-bold text-[#004080] mb-6">📄 Respuestas postoperatorias</h1>
@@ -120,6 +122,7 @@ export default function PanelRespuestas() {
           </div>
         )}
       </div>
-    </main>
-  )
+     </main>
+  </AnimatedLayout>
+)
 }
