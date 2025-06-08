@@ -251,7 +251,7 @@ export default function RegistroPaciente() {
                 onClick={copiarLink}
                 animate={copiado ? { scale: [1, 1.05, 1], backgroundColor: "#16a34a" } : {}}
                 transition={{ duration: 0.3 }}
-                className={`mt-5 px-6 py-2.5 rounded-lg text-white font-semibold transition-all shadow-md inline-flex items-center gap-2 ${
+                className={`w-full mt-5 px-6 py-2.5 rounded-lg text-white font-semibold transition-all shadow-md inline-flex items-center justify-center gap-2 ${
                   copiado
                     ? 'bg-green-600 hover:bg-green-700'
                     : 'bg-[#004080] hover:bg-[#003466]'
@@ -262,7 +262,7 @@ export default function RegistroPaciente() {
 
               <button
                 onClick={resetForm}
-                className="inline-flex items-center justify-center gap-2 mt-4 px-5 py-2 rounded-lg bg-white border border-gray-300 text-[#004080] hover:bg-gray-50 hover:shadow transition font-medium"
+                className="w-full mt-4 px-5 py-2 rounded-lg bg-white border border-gray-300 text-[#004080] hover:bg-gray-50 hover:shadow transition font-medium"
               >
                 + Cargar otro paciente
               </button>
