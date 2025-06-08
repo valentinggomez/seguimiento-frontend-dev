@@ -40,11 +40,22 @@ export default function RegistroPaciente() {
     }
 
     const [d, m, y] = form.fecha_cirugia.split('/')
-    const fechaValida = new Date(`${y}-${m}-${d}`)
+    const dia = parseInt(d, 10)
+    const mes = parseInt(m, 10)
+    const anio = parseInt(y, 10)
+
     const hoy = new Date()
     hoy.setHours(0, 0, 0, 0)
-    if (fechaValida > hoy) {
-      alert('⚠️ La fecha de cirugía no puede ser futura.')
+
+    const fechaIngresada = new Date(`${anio}-${mes}-${dia}`)
+
+    if (
+      isNaN(dia) || isNaN(mes) || isNaN(anio) ||
+      dia < 1 || dia > 31 ||
+      mes < 1 || mes > 12 ||
+      fechaIngresada > hoy
+    ) {
+      alert('⚠️ La fecha de cirugía no es válida. Verificá día, mes y que no sea futura.')
       return
     }
 
