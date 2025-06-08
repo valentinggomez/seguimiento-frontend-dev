@@ -86,7 +86,7 @@ export default function RegistroPaciente() {
   }
 
   return (
-    <main className="min-h-screen bg-white p-6">
+    <main className="max-h-screen bg-white px-4 py-14 flex items-center justify-center">
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
