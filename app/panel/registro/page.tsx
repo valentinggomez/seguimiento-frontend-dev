@@ -16,8 +16,15 @@ export default function RegistroPaciente() {
     telefono: '',
     cirugia: '',
     fecha_cirugia: '',
-    dni_medico: '',
-    matricula_medico: ''
+    nombre_medico: '',
+    edad: '',
+    bloqueo: '',
+    dosis_ketorolac: '',
+    dosis_dexametasona: '',
+    dosis_dexmedetomidina: '',
+    dosis_ketamina: '',
+    esquema_analgesico: '',
+    paracetamol_previo: ''
   })
 
   const [enviado, setEnviado] = useState(false)
@@ -25,7 +32,7 @@ export default function RegistroPaciente() {
   const [copiado, setCopiado] = useState(false)
   const [errores, setErrores] = useState<Partial<Record<string, string>>>({})
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value })
   }
 
@@ -89,8 +96,15 @@ export default function RegistroPaciente() {
       telefono: '',
       cirugia: '',
       fecha_cirugia: '',
-      dni_medico: '',
-      matricula_medico: ''
+      nombre_medico: '',
+      edad: '',
+      bloqueo: '',
+      dosis_ketorolac: '',
+      dosis_dexametasona: '',
+      dosis_dexmedetomidina: '',
+      dosis_ketamina: '',
+      esquema_analgesico: '', 
+      paracetamol_previo: ''
     })
     setEnviado(false)
     setLink('')
@@ -125,6 +139,7 @@ export default function RegistroPaciente() {
             {[
               { name: 'nombre', label: 'Nombre completo', type: 'text' },
               { name: 'dni', label: 'DNI', type: 'text' },
+              { name: 'edad', label: 'Edad', type: 'number' },
               { name: 'telefono', label: 'Teléfono de contacto', type: 'tel' },
               { name: 'cirugia', label: 'Tipo de cirugía', type: 'text' }
             ].map(({ name, label, type }) => (
@@ -217,8 +232,7 @@ export default function RegistroPaciente() {
               <h3 className="text-[#004080] font-semibold mb-3 text-sm">Datos del médico responsable</h3>
 
               {[
-                { name: 'dni_medico', label: 'DNI del médico', type: 'text' },
-                { name: 'matricula_medico', label: 'Matrícula profesional', type: 'text' }
+                { name: 'nombre_medico', label: 'Nombre del médico', type: 'text' }
               ].map(({ name, label, type }) => (
                 <div key={name} className="relative mb-5">
                   <input
@@ -245,6 +259,68 @@ export default function RegistroPaciente() {
                   </label>
                 </div>
               ))}
+            </div>
+            {/* CAJA DE DATOS CLÍNICOS AVANZADOS */}
+            <div className="border border-gray-200 rounded-xl p-4 shadow-sm bg-blue-50 mt-6">
+              <h3 className="text-[#004080] font-semibold mb-3 text-sm">Datos clínicos avanzados</h3>
+
+              {[
+                { name: 'bloqueo', label: 'Tipo de bloqueo' },
+                { name: 'dosis_ketorolac', label: 'Dosis de ketorolac (mg)' },
+                { name: 'dosis_dexametasona', label: 'Dosis de dexametasona (mg/kg)' },
+                { name: 'dosis_dexmedetomidina', label: 'Dosis de dexmedetomidina (mcg/kg)' },
+                { name: 'dosis_ketamina', label: 'Dosis de ketamina (mg/kg)' }
+              ].map(({ name, label }) => (
+                <div key={name} className="relative mb-5">
+                  <input
+                    type="text"
+                    name={name}
+                    value={(form as any)[name]}
+                    onChange={handleChange}
+                    required
+                    placeholder=" "
+                    autoComplete="off"
+                    className={`peer w-full px-3 pt-6 pb-2 border ${
+                      errores[name]
+                        ? 'border-red-500 shadow-sm shadow-red-100 animate-shake'
+                        : (form as any)[name].trim() === ''
+                        ? 'border-gray-300'
+                        : 'border-[#004080]'
+                    } rounded-xl bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#004080] transition-all`}
+                  />
+                  <label
+                    htmlFor={name}
+                    className="absolute left-3 top-2.5 text-sm text-gray-500 peer-focus:top-1 peer-focus:text-xs peer-focus:text-[#004080] peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 transition-all"
+                  >
+                    {label}
+                  </label>
+                </div>
+              ))}
+
+              {/* Esquema analgésico reglado */}
+              <div className="relative mb-5">
+                <textarea
+                  name="esquema_analgesico"
+                  value={form.esquema_analgesico}
+                  onChange={handleChange}
+                  required
+                  placeholder="Esquema analgésico reglado"
+                  className="w-full px-3 pt-4 pb-3 border border-gray-300 rounded-xl bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#004080] transition-all"
+                />
+              </div>
+
+              {/* Paracetamol 1g 3 horas previas */}
+              <div className="flex gap-6 items-center text-sm">
+                <p>Paracetamol 1g 3 horas previas:</p>
+                <label className="flex items-center gap-1">
+                  <input type="radio" name="paracetamol_previo" value="Sí" checked={form.paracetamol_previo === 'Sí'} onChange={handleChange} />
+                  Sí
+                </label>
+                <label className="flex items-center gap-1">
+                  <input type="radio" name="paracetamol_previo" value="No" checked={form.paracetamol_previo === 'No'} onChange={handleChange} />
+                  No
+                </label>
+              </div>
             </div>
 
             <button
