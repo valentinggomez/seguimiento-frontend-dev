@@ -59,24 +59,87 @@ export default function PanelRespuestas() {
           <p className="text-gray-600">No hay respuestas aún.</p>
         ) : (
           <div className="grid gap-4">
-            {respuestas.map((r) => (
-              <div key={r.id} className="bg-white rounded-xl shadow p-5">
-                <div className="flex justify-between items-center mb-2">
-                  <h2 className="font-semibold text-[#004080]">🧾 Seguimiento ID #{r.id}</h2>
-                  <span className="text-sm text-gray-500">{new Date(r.fecha_respuesta).toLocaleString('es-AR')}</span>
+            {respuestas.map((r) => {
+              const [abierto, setAbierto] = useState<number | null>(null)
+              const estaAbierto = abierto === r.id
+              const dolorAlto =
+                parseInt(r.dolor_6h) > 7 || parseInt(r.dolor_24h) > 7
+
+              // 🧠 Reemplazá esto por lo que uses para obtener el nombre
+              const nombre = `Paciente ${r.paciente_id}`
+
+              return (
+                <div
+                  key={r.id}
+                  className={`bg-white rounded-xl shadow border transition overflow-hidden ${
+                    dolorAlto ? 'border-red-400' : 'border-gray-200'
+                  }`}
+                >
+                  <button
+                    onClick={() =>
+                      setAbierto((prev) => (prev === r.id ? null : r.id))
+                    }
+                    className={`w-full flex justify-between items-center p-4 text-left font-semibold ${
+                      dolorAlto
+                        ? 'bg-red-50 hover:bg-red-100 text-red-800'
+                        : 'text-[#004080] hover:bg-gray-50'
+                    } rounded-t-xl`}
+                  >
+                    <span>🧾 Seguimiento de {nombre}</span>
+                    <span className="text-sm text-gray-500">
+                      {new Date(r.fecha_respuesta).toLocaleString('es-AR', {
+                        day: 'numeric',
+                        month: 'numeric',
+                        year: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: false,
+                      })}
+                    </span>
+                  </button>
+
+                  {estaAbierto && (
+                    <div className="px-5 pb-4 pt-2 text-sm text-gray-700 grid grid-cols-2 gap-x-6 gap-y-1">
+                      <p>
+                        <strong>Dolor 6h:</strong> {r.dolor_6h}
+                      </p>
+                      <p>
+                        <strong>Dolor 24h:</strong> {r.dolor_24h}
+                      </p>
+                      <p>
+                        <strong>¿Dolor mayor a 7?</strong>{' '}
+                        <span
+                          className={
+                            dolorAlto ? 'text-red-600 font-semibold' : ''
+                          }
+                        >
+                          {dolorAlto ? 'Sí 🔔' : 'No'}
+                        </span>
+                      </p>
+                      <p>
+                        <strong>Náuseas:</strong>{' '}
+                        {r.nauseas === 'true' ? 'Sí' : 'No'}
+                      </p>
+                      <p>
+                        <strong>Vómitos:</strong>{' '}
+                        {r.vomitos === 'true' ? 'Sí' : 'No'}
+                      </p>
+                      <p>
+                        <strong>Somnolencia:</strong>{' '}
+                        {r.somnolencia === 'true' ? 'Sí' : 'No'}
+                      </p>
+                      <p>
+                        <strong>Satisfacción:</strong> {r.satisfaccion}
+                      </p>
+                      <p>
+                        <strong>Observaciones:</strong>{' '}
+                        {r.observaciones || '–'}
+                      </p>
+                    </div>
+                  )}
                 </div>
-                <div className="text-sm text-gray-700 grid grid-cols-2 gap-x-6 gap-y-1">
-                  <p><strong>Dolor 6h:</strong> {r.dolor_6h}</p>
-                  <p><strong>Dolor 24h:</strong> {r.dolor_24h}</p>
-                  <p><strong>¿Dolor mayor a 7?</strong> {r.dolor_mayor_7}</p>
-                  <p><strong>Náuseas:</strong> {r.nauseas}</p>
-                  <p><strong>Vómitos:</strong> {r.vomitos}</p>
-                  <p><strong>Somnolencia:</strong> {r.somnolencia}</p>
-                  <p><strong>Satisfacción:</strong> {r.satisfaccion}</p>
-                  <p><strong>Observaciones:</strong> {r.observaciones || '–'}</p>
-                </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         )}
       </div>
