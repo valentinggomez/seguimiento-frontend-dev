@@ -183,10 +183,10 @@ export default function SeguimientoPaciente() {
 
             {/* Satisfacción (1 a 5) */}
             <div>
-              <label className="block text-gray-700 font-medium mb-1">{preguntas[9]}</label>
+              <label className="block text-gray-700 font-medium mb-1">{preguntas[8]}</label>
               <select
-                value={respuestas[9]}
-                onChange={e => handleChange(9, e.target.value)}
+                value={respuestas[8]}
+                onChange={e => handleChange(8, e.target.value)}
                 required
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               >
@@ -199,8 +199,8 @@ export default function SeguimientoPaciente() {
             <div>
               <label className="block text-gray-700 font-medium mb-1">{preguntas[9]}</label>
               <textarea
-                value={respuestas[10]}
-                onChange={e => handleChange(10, e.target.value)}
+                value={respuestas[9]}
+                onChange={e => handleChange(9, e.target.value)}
                 required
                 rows={3}
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
