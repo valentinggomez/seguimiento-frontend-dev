@@ -136,6 +136,29 @@ export default function RegistroPaciente() {
                 </label>
               </div>
             ))}
+            <div className="relative">
+              <input
+                type="date"
+                name="fecha_cirugia"
+                value={form.fecha_cirugia}
+                max={new Date().toISOString().split('T')[0]} // no permite fechas futuras
+                onChange={(e) => {
+                  const iso = e.target.value // yyyy-mm-dd
+                  const [y, m, d] = iso.split('-')
+                  const argentina = `${d}/${m}/${y}`
+                  setForm({ ...form, fecha_cirugia: argentina })
+                }}
+                required
+                className="peer w-full px-3 pt-6 pb-2 border border-gray-300 rounded-xl bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#004080] transition-all"
+              />
+              <label
+                htmlFor="fecha_cirugia"
+                className="absolute left-3 top-2.5 text-sm text-gray-500 peer-focus:top-1 peer-focus:text-xs peer-focus:text-[#004080] peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 transition-all"
+              >
+                Fecha de cirugía
+              </label>
+            </div>
+
             <button
               type="submit"
               className="w-full py-3 rounded-xl bg-[#004080] hover:bg-[#002e5c] text-white font-semibold transition shadow"
