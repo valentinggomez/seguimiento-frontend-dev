@@ -23,6 +23,7 @@ export default function RegistroPaciente() {
   const [enviado, setEnviado] = useState(false)
   const [link, setLink] = useState('')
   const [copiado, setCopiado] = useState(false)
+  const [errores, setErrores] = useState<Partial<Record<string, string>>>({})
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value })
@@ -108,25 +109,30 @@ export default function RegistroPaciente() {
 
 
         {!enviado ? (
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-7">
+
             {[
-              { name: 'nombre', label: 'Nombre completo' },
-              { name: 'dni', label: 'DNI' },
-              { name: 'telefono', label: 'Teléfono de contacto' },
-              { name: 'cirugia', label: 'Tipo de cirugía' },
-              { name: 'fecha_cirugia', label: 'Fecha de cirugía (dd/mm/aaaa)' },
-              { name: 'dni_medico', label: 'DNI del médico' },
-              { name: 'matricula_medico', label: 'Matrícula profesional' }
-            ].map(({ name, label }) => (
+              { name: 'nombre', label: 'Nombre completo', type: 'text' },
+              { name: 'dni', label: 'DNI', type: 'text' },
+              { name: 'telefono', label: 'Teléfono de contacto', type: 'tel' },
+              { name: 'cirugia', label: 'Tipo de cirugía', type: 'text' }
+            ].map(({ name, label, type }) => (
               <div key={name} className="relative">
                 <input
-                  type="text"
+                  type={type}
                   name={name}
                   value={(form as any)[name]}
                   onChange={handleChange}
                   required
                   placeholder=" "
-                  className="peer w-full px-3 pt-6 pb-2 border border-gray-300 rounded-xl bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#004080] transition-all"
+                  autoComplete="off"
+                  className={`peer w-full px-3 pt-6 pb-2 border ${
+                    errores[name]
+                      ? 'border-red-500 shadow-sm shadow-red-100 animate-shake'
+                      : (form as any)[name].trim() === ''
+                      ? 'border-gray-300'
+                      : 'border-[#004080]'
+                  } rounded-xl bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#004080] transition-all`}
                 />
                 <label
                   htmlFor={name}
@@ -136,69 +142,134 @@ export default function RegistroPaciente() {
                 </label>
               </div>
             ))}
+
+            {/* FECHA DE CIRUGÍA CON FORMATO dd/mm/aaaa */}
             <div className="relative">
               <input
-                type="date"
+                type="text"
                 name="fecha_cirugia"
                 value={form.fecha_cirugia}
-                max={new Date().toISOString().split('T')[0]} // no permite fechas futuras
                 onChange={(e) => {
-                  const iso = e.target.value // yyyy-mm-dd
-                  const [y, m, d] = iso.split('-')
-                  const argentina = `${d}/${m}/${y}`
-                  setForm({ ...form, fecha_cirugia: argentina })
+                  let val = e.target.value.replace(/\D/g, '')
+                  if (val.length >= 3 && val.length <= 4)
+                    val = val.replace(/(\d{2})(\d+)/, '$1/$2')
+                  else if (val.length >= 5)
+                    val = val.replace(/(\d{2})(\d{2})(\d+)/, '$1/$2/$3')
+                  setForm({ ...form, fecha_cirugia: val.slice(0, 10) })
                 }}
+                placeholder=" "
+                maxLength={10}
                 required
-                className="peer w-full px-3 pt-6 pb-2 border border-gray-300 rounded-xl bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#004080] transition-all"
+                autoComplete="off"
+                className={`peer w-full px-3 pt-6 pb-2 border ${
+                  errores.fecha_cirugia
+                    ? 'border-red-500 shadow-sm shadow-red-100 animate-shake'
+                    : form.fecha_cirugia.trim() === ''
+                    ? 'border-gray-300'
+                    : 'border-[#004080]'
+                } rounded-xl bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#004080] transition-all`}
               />
               <label
                 htmlFor="fecha_cirugia"
                 className="absolute left-3 top-2.5 text-sm text-gray-500 peer-focus:top-1 peer-focus:text-xs peer-focus:text-[#004080] peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 transition-all"
               >
-                Fecha de cirugía
+                Fecha de cirugía (dd/mm/aaaa)
               </label>
+              {errores.fecha_cirugia && (
+                <p className="text-red-600 text-sm mt-1">
+                  La fecha no puede estar vacía ni ser futura.
+                </p>
+              )}
+            </div>
+
+            {/* CAJA DE DATOS DEL MÉDICO */}
+            <div className="border border-gray-200 rounded-xl p-4 shadow-sm bg-blue-50 mt-6">
+              <h3 className="text-[#004080] font-semibold mb-3 text-sm">Datos del médico responsable</h3>
+
+              {[
+                { name: 'dni_medico', label: 'DNI del médico', type: 'text' },
+                { name: 'matricula_medico', label: 'Matrícula profesional', type: 'text' }
+              ].map(({ name, label, type }) => (
+                <div key={name} className="relative mb-5">
+                  <input
+                    type={type}
+                    name={name}
+                    value={(form as any)[name]}
+                    onChange={handleChange}
+                    required
+                    placeholder=" "
+                    autoComplete="off"
+                    className={`peer w-full px-3 pt-6 pb-2 border ${
+                      errores[name]
+                        ? 'border-red-500 shadow-sm shadow-red-100 animate-shake'
+                        : (form as any)[name].trim() === ''
+                        ? 'border-gray-300'
+                        : 'border-[#004080]'
+                    } rounded-xl bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#004080] transition-all`}
+                  />
+                  <label
+                    htmlFor={name}
+                    className="absolute left-3 top-2.5 text-sm text-gray-500 peer-focus:top-1 peer-focus:text-xs peer-focus:text-[#004080] peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 transition-all"
+                  >
+                    {label}
+                  </label>
+                </div>
+              ))}
             </div>
 
             <button
               type="submit"
-              className="w-full py-3 rounded-xl bg-[#004080] hover:bg-[#002e5c] text-white font-semibold transition shadow"
+              className="w-full bg-[#004080] text-white py-3 rounded-lg hover:bg-[#002e5c] transition font-semibold shadow"
             >
               Guardar paciente y generar link
             </button>
           </form>
         ) : (
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5 }}
-            className="text-center space-y-6"
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="space-y-8 text-center"
           >
-            <div className="bg-green-50 border border-green-300 rounded-xl p-6 shadow">
-              <h2 className="text-xl font-semibold text-green-700 mb-2">✅ Paciente registrado</h2>
-              <p className="text-gray-700 text-sm mb-3">
-                Compartí este enlace con el paciente para completar el formulario postoperatorio:
+            <div className="border border-green-300 bg-green-50 rounded-2xl shadow-md px-6 py-8">
+              <div className="flex items-center justify-center gap-3 mb-3 text-green-700">
+                <span className="text-4xl">✅</span>
+                <h2 className="text-2xl font-bold tracking-tight">
+                  Paciente registrado correctamente
+                </h2>
+              </div>
+
+              <p className="text-gray-700 mb-4 text-sm max-w-md mx-auto">
+                Compartí este enlace con el paciente para que complete su formulario postoperatorio:
               </p>
-              <div className="font-mono bg-white border rounded-lg px-4 py-2 text-sm text-gray-800 break-words">
+
+              <div className="bg-white border border-gray-300 rounded-lg px-4 py-3 text-sm text-gray-800 font-mono break-words">
                 {link}
               </div>
-              <button
+
+              <motion.button
                 onClick={copiarLink}
-                className={`mt-4 px-5 py-2 rounded-lg text-white font-medium transition shadow ${
-                  copiado ? 'bg-green-600' : 'bg-[#004080] hover:bg-[#003466]'
+                animate={copiado ? { scale: [1, 1.05, 1], backgroundColor: "#16a34a" } : {}}
+                transition={{ duration: 0.3 }}
+                className={`mt-5 px-6 py-2.5 rounded-lg text-white font-semibold transition-all shadow-md inline-flex items-center gap-2 ${
+                  copiado
+                    ? 'bg-green-600 hover:bg-green-700'
+                    : 'bg-[#004080] hover:bg-[#003466]'
                 }`}
               >
                 {copiado ? '✅ Link copiado' : '📋 Copiar link'}
+              </motion.button>
+
+              <button
+                onClick={resetForm}
+                className="inline-flex items-center justify-center gap-2 mt-4 px-5 py-2 rounded-lg bg-white border border-gray-300 text-[#004080] hover:bg-gray-50 hover:shadow transition font-medium"
+              >
+                + Cargar otro paciente
               </button>
             </div>
-
-            <button
-              onClick={resetForm}
-              className="inline-flex items-center justify-center gap-2 mt-4 px-5 py-2 rounded-lg bg-white border border-gray-300 text-[#004080] hover:bg-gray-50 hover:shadow transition font-medium"
-            >
-              + Cargar otro paciente
-            </button>
           </motion.div>
         )}
+
       </motion.div>
     </main>
   )
