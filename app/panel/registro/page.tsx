@@ -227,39 +227,6 @@ export default function RegistroPaciente() {
               )}
             </div>
 
-            {/* CAJA DE DATOS DEL MÉDICO */}
-            <div className="border border-gray-200 rounded-xl p-4 shadow-sm bg-blue-50 mt-6">
-              <h3 className="text-[#004080] font-semibold mb-3 text-sm">Datos del médico responsable</h3>
-
-              {[
-                { name: 'nombre_medico', label: 'Nombre del médico', type: 'text' }
-              ].map(({ name, label, type }) => (
-                <div key={name} className="relative mb-5">
-                  <input
-                    type={type}
-                    name={name}
-                    value={(form as any)[name]}
-                    onChange={handleChange}
-                    required
-                    placeholder=" "
-                    autoComplete="off"
-                    className={`peer w-full px-3 pt-6 pb-2 border ${
-                      errores[name]
-                        ? 'border-red-500 shadow-sm shadow-red-100 animate-shake'
-                        : (form as any)[name].trim() === ''
-                        ? 'border-gray-300'
-                        : 'border-[#004080]'
-                    } rounded-xl bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#004080] transition-all`}
-                  />
-                  <label
-                    htmlFor={name}
-                    className="absolute left-3 top-2.5 text-sm text-gray-500 peer-focus:top-1 peer-focus:text-xs peer-focus:text-[#004080] peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 transition-all"
-                  >
-                    {label}
-                  </label>
-                </div>
-              ))}
-            </div>
             {/* CAJA DE DATOS CLÍNICOS AVANZADOS */}
             <div className="border border-gray-200 rounded-xl p-4 shadow-sm bg-blue-50 mt-6">
               <h3 className="text-[#004080] font-semibold mb-3 text-sm">Datos clínicos avanzados</h3>
@@ -321,6 +288,40 @@ export default function RegistroPaciente() {
                   No
                 </label>
               </div>
+            </div>
+            
+            {/* CAJA DE DATOS DEL MÉDICO */}
+            <div className="border border-gray-200 rounded-xl p-4 shadow-sm bg-blue-50 mt-6">
+              <h3 className="text-[#004080] font-semibold mb-3 text-sm">Datos del médico responsable</h3>
+
+              {[
+                { name: 'nombre_medico', label: 'Nombre del médico', type: 'text' }
+              ].map(({ name, label, type }) => (
+                <div key={name} className="relative mb-5">
+                  <input
+                    type={type}
+                    name={name}
+                    value={(form as any)[name]}
+                    onChange={handleChange}
+                    required
+                    placeholder=" "
+                    autoComplete="off"
+                    className={`peer w-full px-3 pt-6 pb-2 border ${
+                      errores[name]
+                        ? 'border-red-500 shadow-sm shadow-red-100 animate-shake'
+                        : (form as any)[name].trim() === ''
+                        ? 'border-gray-300'
+                        : 'border-[#004080]'
+                    } rounded-xl bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#004080] transition-all`}
+                  />
+                  <label
+                    htmlFor={name}
+                    className="absolute left-3 top-2.5 text-sm text-gray-500 peer-focus:top-1 peer-focus:text-xs peer-focus:text-[#004080] peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 transition-all"
+                  >
+                    {label}
+                  </label>
+                </div>
+              ))}
             </div>
 
             <button
