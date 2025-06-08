@@ -25,20 +25,40 @@ export default function PanelRespuestas() {
   const [respuestas, setRespuestas] = useState<Respuesta[]>([])
   const [cargando, setCargando] = useState(true)
   const [abierto, setAbierto] = useState<number | null>(null)
-  useEffect(() => {
-    const fetchRespuestas = async () => {
-      const { data, error } = await supabase.from('respuestas_postop').select('*').order('fecha_respuesta', { ascending: false })
+  const [pacientes, setPacientes] = useState<{ id: number; nombre: string }[]>([])
 
-      if (!error && data) {
-        setRespuestas(data)
+  useEffect(() => {
+    const fetchDatos = async () => {
+      // Traer respuestas
+      const { data: respuestasData, error: errorRespuestas } = await supabase
+        .from('respuestas_postop')
+        .select('*')
+        .order('fecha_respuesta', { ascending: false })
+
+      // Traer pacientes
+      const { data: pacientesData, error: errorPacientes } = await supabase
+        .from('pacientes')
+        .select('id, nombre')
+
+      if (!errorRespuestas && respuestasData) {
+        setRespuestas(respuestasData)
+      }
+
+      if (!errorPacientes && pacientesData) {
+        setPacientes(pacientesData)
       }
 
       setCargando(false)
     }
 
-    fetchRespuestas()
+    fetchDatos()
   }, [])
 
+
+  const obtenerNombre = (id: number) => {
+    const paciente = pacientes.find(p => p.id === id)
+    return paciente?.nombre || `Paciente ${id}`
+  }
   return (
     <main className="min-h-screen bg-gray-100 p-6">
       <div className="max-w-5xl mx-auto">
@@ -65,7 +85,7 @@ export default function PanelRespuestas() {
                 parseInt(r.dolor_6h) > 7 || parseInt(r.dolor_24h) > 7
 
               // 🧠 Reemplazá esto por lo que uses para obtener el nombre
-              const nombre = `Paciente ${r.paciente_id}`
+              const nombre = obtenerNombre(r.paciente_id)
 
               return (
                 <div
