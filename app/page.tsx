@@ -15,7 +15,7 @@ export default function Inicio() {
         className="max-w-xl w-full bg-white border border-gray-200 rounded-3xl shadow-2xl p-10 space-y-10"
       >
         <div className="text-center space-y-2">
-          <h1 className="text-4xl font-bold text-[#004080] tracking-tight">Sistema UDAP</h1>
+          <h1 className="text-4xl font-bold text-[#004080] tracking-tight">UDAP</h1>
           <p className="text-sm text-gray-500">Unidad de Dolor Agudo Postoperatorio</p>
         </div>
 
