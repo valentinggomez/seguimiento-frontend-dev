@@ -19,7 +19,6 @@ const preguntas = [
   '¿Tuvo somnolencia?',
   '¿Requirió medicación adicional?',
   '¿Despertó por dolor?',
-  '¿Desea continuar el seguimiento?',
   '¿Cómo calificaría la atención recibida?',
   '¿Desea dejar alguna observación?'
 ]
@@ -166,7 +165,7 @@ export default function SeguimientoPaciente() {
             })}
 
             {/* Selects */}
-            {[2, 3, 4, 5, 6, 7, 8].map(i => (
+            {[2, 3, 4, 5, 6, 7].map(i => (
               <div key={i}>
                 <label className="block text-gray-700 font-medium mb-1">{preguntas[i]}</label>
                 <select
@@ -198,7 +197,7 @@ export default function SeguimientoPaciente() {
 
             {/* Observaciones (textarea) */}
             <div>
-              <label className="block text-gray-700 font-medium mb-1">{preguntas[10]}</label>
+              <label className="block text-gray-700 font-medium mb-1">{preguntas[9]}</label>
               <textarea
                 value={respuestas[10]}
                 onChange={e => handleChange(10, e.target.value)}
