@@ -24,7 +24,7 @@ type Respuesta = {
 export default function PanelRespuestas() {
   const [respuestas, setRespuestas] = useState<Respuesta[]>([])
   const [cargando, setCargando] = useState(true)
-
+  const [abierto, setAbierto] = useState<number | null>(null)
   useEffect(() => {
     const fetchRespuestas = async () => {
       const { data, error } = await supabase.from('respuestas_postop').select('*').order('fecha_respuesta', { ascending: false })
@@ -60,7 +60,6 @@ export default function PanelRespuestas() {
         ) : (
           <div className="grid gap-4">
             {respuestas.map((r) => {
-              const [abierto, setAbierto] = useState<number | null>(null)
               const estaAbierto = abierto === r.id
               const dolorAlto =
                 parseInt(r.dolor_6h) > 7 || parseInt(r.dolor_24h) > 7
