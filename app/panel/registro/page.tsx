@@ -166,7 +166,26 @@ export default function RegistroPaciente() {
                     val = val.replace(/(\d{2})(\d+)/, '$1/$2')
                   else if (val.length >= 5)
                     val = val.replace(/(\d{2})(\d{2})(\d+)/, '$1/$2/$3')
-                  setForm({ ...form, fecha_cirugia: val.slice(0, 10) })
+
+                  const fecha = val.slice(0, 10)
+                  setForm({ ...form, fecha_cirugia: fecha })
+
+                  // Validación visual en tiempo real
+                  const [d, m, y] = fecha.split('/')
+                  const dia = parseInt(d, 10)
+                  const mes = parseInt(m, 10)
+                  const anio = parseInt(y, 10)
+                  const fechaIngresada = new Date(`${anio}-${mes}-${dia}`)
+                  const hoy = new Date()
+                  hoy.setHours(0, 0, 0, 0)
+
+                  const esInvalida =
+                    isNaN(dia) || isNaN(mes) || isNaN(anio) ||
+                    dia < 1 || dia > 31 ||
+                    mes < 1 || mes > 12 ||
+                    fechaIngresada > hoy
+
+                  setErrores((prev) => ({ ...prev, fecha_cirugia: esInvalida ? 'Fecha inválida' : '' }))
                 }}
                 placeholder=" "
                 maxLength={10}
@@ -187,9 +206,7 @@ export default function RegistroPaciente() {
                 Fecha de cirugía (dd/mm/aaaa)
               </label>
               {errores.fecha_cirugia && (
-                <p className="text-red-600 text-sm mt-1">
-                  La fecha no puede estar vacía ni ser futura.
-                </p>
+                <p className="text-red-600 text-sm mt-1">{errores.fecha_cirugia}</p>
               )}
             </div>
 
