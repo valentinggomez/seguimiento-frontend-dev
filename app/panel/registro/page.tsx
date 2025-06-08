@@ -170,7 +170,7 @@ export default function RegistroPaciente() {
                   const fecha = val.slice(0, 10)
                   setForm({ ...form, fecha_cirugia: fecha })
 
-                  // Validación visual en tiempo real
+                  // Validación progresiva
                   const [d, m, y] = fecha.split('/')
                   const dia = parseInt(d, 10)
                   const mes = parseInt(m, 10)
@@ -179,13 +179,15 @@ export default function RegistroPaciente() {
                   const hoy = new Date()
                   hoy.setHours(0, 0, 0, 0)
 
-                  const esInvalida =
-                    isNaN(dia) || isNaN(mes) || isNaN(anio) ||
-                    dia < 1 || dia > 31 ||
-                    mes < 1 || mes > 12 ||
-                    fechaIngresada > hoy
+                  let esInvalida = false
+                  if (fecha.length >= 2 && (dia < 1 || dia > 31)) esInvalida = true
+                  if (fecha.length >= 5 && (mes < 1 || mes > 12)) esInvalida = true
+                  if (fecha.length === 10 && fechaIngresada > hoy) esInvalida = true
 
-                  setErrores((prev) => ({ ...prev, fecha_cirugia: esInvalida ? 'Fecha inválida' : '' }))
+                  setErrores((prev) => ({
+                    ...prev,
+                    fecha_cirugia: esInvalida ? 'Fecha inválida' : ''
+                  }))
                 }}
                 placeholder=" "
                 maxLength={10}
