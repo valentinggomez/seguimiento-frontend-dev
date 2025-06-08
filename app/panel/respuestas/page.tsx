@@ -25,7 +25,7 @@ export default function PanelRespuestas() {
   const [respuestas, setRespuestas] = useState<Respuesta[]>([])
   const [cargando, setCargando] = useState(true)
   const [abierto, setAbierto] = useState<number | null>(null)
-  const [pacientes, setPacientes] = useState<{ id: number; nombre: string }[]>([])
+  const [pacientes, setPacientes] = useState<{ id: number; nombre: string; cirugia: string }[]>([])
 
   useEffect(() => {
     const fetchDatos = async () => {
@@ -38,7 +38,7 @@ export default function PanelRespuestas() {
       // Traer pacientes
       const { data: pacientesData, error: errorPacientes } = await supabase
         .from('pacientes')
-        .select('id, nombre')
+        .select('id, nombre, cirugia')
 
       if (!errorRespuestas && respuestasData) {
         setRespuestas(respuestasData)
@@ -81,30 +81,42 @@ export default function PanelRespuestas() {
           <div className="grid gap-4">
             {respuestas.map((r) => {
               const estaAbierto = abierto === r.id
-              const dolorAlto =
-                parseInt(r.dolor_6h) > 7 || parseInt(r.dolor_24h) > 7
+              const dolor6 = parseInt(r.dolor_6h)
+              const dolor24 = parseInt(r.dolor_24h)
 
-              // 🧠 Reemplazá esto por lo que uses para obtener el nombre
-              const nombre = obtenerNombre(r.paciente_id)
+              const tieneSintomasLeves =
+                r.nauseas === 'true' || r.vomitos === 'true' || r.somnolencia === 'true'
+              const dolorAlto = dolor6 > 7 || dolor24 > 7
+
+              const nivel = dolorAlto
+                ? 'critico'
+                : tieneSintomasLeves
+                ? 'leve'
+                : 'ok'
+
+              const paciente = pacientes.find(p => p.id === r.paciente_id)
+              const nombre = paciente?.nombre || `Paciente ${r.paciente_id}`
+              const cirugia = paciente?.cirugia || 'Cirugía no registrada'
+
+              const estilos = {
+                ok: 'bg-green-50 hover:bg-green-100 text-green-800 border-green-300',
+                leve: 'bg-yellow-50 hover:bg-yellow-100 text-yellow-800 border-yellow-300',
+                critico: 'bg-red-50 hover:bg-red-100 text-red-800 border-red-400',
+              }
 
               return (
                 <div
                   key={r.id}
-                  className={`bg-white rounded-xl shadow border transition overflow-hidden ${
-                    dolorAlto ? 'border-red-400' : 'border-gray-200'
-                  }`}
+                  className={`bg-white rounded-xl shadow border transition overflow-hidden ${estilos[nivel]}`}
                 >
                   <button
-                    onClick={() =>
-                      setAbierto((prev) => (prev === r.id ? null : r.id))
-                    }
-                    className={`w-full flex justify-between items-center p-4 text-left font-semibold ${
-                      dolorAlto
-                        ? 'bg-red-50 hover:bg-red-100 text-red-800'
-                        : 'text-[#004080] hover:bg-gray-50'
-                    } rounded-t-xl`}
+                    onClick={() => setAbierto(estaAbierto ? null : r.id)}
+                    className={`w-full flex justify-between items-center p-4 text-left font-semibold ${estilos[nivel]} rounded-t-xl`}
                   >
-                    <span>🧾 Seguimiento de {nombre}</span>
+                    <div>
+                      <span>🧾 Seguimiento de {nombre}</span>
+                      <p className="text-sm text-gray-500">{cirugia}</p>
+                    </div>
                     <span className="text-sm text-gray-500">
                       {new Date(r.fecha_respuesta).toLocaleString('es-AR', {
                         day: 'numeric',
@@ -119,41 +131,19 @@ export default function PanelRespuestas() {
 
                   {estaAbierto && (
                     <div className="px-5 pb-4 pt-2 text-sm text-gray-700 grid grid-cols-2 gap-x-6 gap-y-1">
-                      <p>
-                        <strong>Dolor 6h:</strong> {r.dolor_6h}
-                      </p>
-                      <p>
-                        <strong>Dolor 24h:</strong> {r.dolor_24h}
-                      </p>
+                      <p><strong>Dolor 6h:</strong> {r.dolor_6h}</p>
+                      <p><strong>Dolor 24h:</strong> {r.dolor_24h}</p>
                       <p>
                         <strong>¿Dolor mayor a 7?</strong>{' '}
-                        <span
-                          className={
-                            dolorAlto ? 'text-red-600 font-semibold' : ''
-                          }
-                        >
+                        <span className={dolorAlto ? 'text-red-600 font-semibold' : ''}>
                           {dolorAlto ? 'Sí 🔔' : 'No'}
                         </span>
                       </p>
-                      <p>
-                        <strong>Náuseas:</strong>{' '}
-                        {r.nauseas === 'true' ? 'Sí' : 'No'}
-                      </p>
-                      <p>
-                        <strong>Vómitos:</strong>{' '}
-                        {r.vomitos === 'true' ? 'Sí' : 'No'}
-                      </p>
-                      <p>
-                        <strong>Somnolencia:</strong>{' '}
-                        {r.somnolencia === 'true' ? 'Sí' : 'No'}
-                      </p>
-                      <p>
-                        <strong>Satisfacción:</strong> {r.satisfaccion}
-                      </p>
-                      <p>
-                        <strong>Observaciones:</strong>{' '}
-                        {r.observaciones || '–'}
-                      </p>
+                      <p><strong>Náuseas:</strong> {r.nauseas === 'true' ? 'Sí' : 'No'}</p>
+                      <p><strong>Vómitos:</strong> {r.vomitos === 'true' ? 'Sí' : 'No'}</p>
+                      <p><strong>Somnolencia:</strong> {r.somnolencia === 'true' ? 'Sí' : 'No'}</p>
+                      <p><strong>Satisfacción:</strong> {r.satisfaccion}</p>
+                      <p><strong>Observaciones:</strong> {r.observaciones || '–'}</p>
                     </div>
                   )}
                 </div>
