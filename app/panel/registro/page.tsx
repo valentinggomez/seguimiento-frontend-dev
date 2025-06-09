@@ -211,6 +211,7 @@ export default function RegistroPaciente() {
                 htmlFor="sexo"
                 className="absolute left-3 top-2.5 text-sm text-gray-500 peer-focus:top-1 peer-focus:text-xs peer-focus:text-[#004080] peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 transition-all"
               >
+                Sexo
               </label>
             </div>
 

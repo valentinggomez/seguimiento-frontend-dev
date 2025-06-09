@@ -25,7 +25,17 @@ export default function PanelRespuestas() {
   const [respuestas, setRespuestas] = useState<Respuesta[]>([])
   const [cargando, setCargando] = useState(true)
   const [abierto, setAbierto] = useState<number | null>(null)
-  const [pacientes, setPacientes] = useState<{ id: number; nombre: string; cirugia: string; edad?: number }[]>([])
+  const [pacientes, setPacientes] = useState<{
+    id: number
+    nombre: string
+    cirugia: string
+    edad?: number
+    sexo?: string
+    peso?: number
+    altura?: number
+    imc?: string
+  }[]>([])
+
 
   useEffect(() => {
     const fetchDatos = async () => {
@@ -38,7 +48,7 @@ export default function PanelRespuestas() {
       // Traer pacientes
       const { data: pacientesData, error: errorPacientes } = await supabase
         .from('pacientes')
-        .select('id, nombre, cirugia, edad')
+        .select('id, nombre, cirugia, edad, sexo, peso, altura, imc')
 
       if (!errorRespuestas && respuestasData) {
         setRespuestas(respuestasData)
@@ -104,6 +114,14 @@ export default function PanelRespuestas() {
                 critico: 'bg-red-50 hover:bg-red-100 text-red-800 border-red-400',
               }
 
+              function getIMCColor(imc: string) {
+                const valor = parseFloat(imc || '')
+                if (isNaN(valor)) return ''
+                if (valor < 18.5) return 'text-blue-600'
+                if (valor < 25) return 'text-green-600'
+                if (valor < 30) return 'text-yellow-600'
+                return 'text-red-600'
+              }
               return (
                 <div
                   key={r.id}
@@ -117,6 +135,16 @@ export default function PanelRespuestas() {
                       <span>🧾 Seguimiento de {nombre}</span>
                       <p className="text-sm text-gray-500">
                         {cirugia} • {paciente?.edad ? `${paciente.edad} años` : 'Edad no registrada'}
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        {paciente?.sexo && `Sexo: ${paciente.sexo}`} •{' '}
+                        {paciente?.peso && `Peso: ${paciente.peso}kg`} •{' '}
+                        {paciente?.altura && `Altura: ${paciente.altura}m`} •{' '}
+                        {paciente?.imc && (
+                          <span className={`font-semibold ${getIMCColor(paciente.imc)}`}>
+                            IMC: {paciente.imc}
+                          </span>
+                        )}
                       </p>
                     </div>
                     <span className="text-sm text-gray-500">
