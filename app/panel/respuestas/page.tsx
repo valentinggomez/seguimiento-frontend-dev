@@ -60,8 +60,8 @@ export default function PanelRespuestas() {
     return paciente?.nombre || `Paciente ${id}`
   }
   return (
-    <main className="min-h-screen bg-white p-6">
-
+    <main className="min-h-screen bg-gray-100 p-6">
+      <div className="max-w-5xl mx-auto">
         <div className="mb-6">
           <a
             href="/"
@@ -153,6 +153,7 @@ export default function PanelRespuestas() {
             })}
           </div>
         )}
+      </div>
     </main>
   )
 }
