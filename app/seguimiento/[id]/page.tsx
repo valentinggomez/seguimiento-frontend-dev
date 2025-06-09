@@ -19,7 +19,7 @@ const preguntas = [
   '¿Tuvo somnolencia?',
   '¿Requirió medicación adicional?',
   '¿Despertó por dolor?',
-  '¿Cómo calificaría la atención recibida?',
+  '¿Cómo calificaría la atención recibida? (1 a 10)',
   '¿A cuántas horas pudo mover con normalidad la/s extremidades?',
   '¿Desea dejar alguna observación?'
 ]
@@ -60,7 +60,7 @@ export default function SeguimientoPaciente() {
         errores.push(`La respuesta de dolor "${preguntas[i]}" debe ser un número entre 0 y 10.`);
       }
     }
-    
+
     const satisfaccion = Number(respuestas[8]);
     if (isNaN(satisfaccion) || satisfaccion < 1 || satisfaccion > 10) {
       errores.push('La satisfacción debe ser un número entre 1 y 10.');
