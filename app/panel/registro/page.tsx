@@ -233,10 +233,10 @@ export default function RegistroPaciente() {
 
               {[
                 { name: 'bloqueo', label: 'Tipo de bloqueo' },
-                { name: 'dosis_ketorolac', label: 'Dosis de ketorolac (mg)' },
-                { name: 'dosis_dexametasona', label: 'Dosis de dexametasona (mg/kg)' },
-                { name: 'dosis_dexmedetomidina', label: 'Dosis de dexmedetomidina (mcg/kg)' },
-                { name: 'dosis_ketamina', label: 'Dosis de ketamina (mg/kg)' }
+                { name: 'dosis_ketorolac', label: 'Ketorolac (mg)' },
+                { name: 'dosis_dexametasona', label: 'Dexametasona (mg/kg)' },
+                { name: 'dosis_dexmedetomidina', label: 'Dexmedetomidina (mcg/kg)' },
+                { name: 'dosis_ketamina', label: 'Ketamina (mg/kg)' }
               ].map(({ name, label }) => (
                 <div key={name} className="relative mb-5">
                   <input
