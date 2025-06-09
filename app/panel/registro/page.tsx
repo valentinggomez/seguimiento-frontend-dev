@@ -228,7 +228,7 @@ export default function RegistroPaciente() {
             </div>
 
             {/* CAJA DE DATOS CLÍNICOS AVANZADOS */}
-            <div className="border border-gray-200 rounded-xl p-4 shadow-sm bg-blue-50 mt-6">
+            <div className="border border-gray-200 rounded-xl px-4 py-6 shadow-sm bg-blue-50 mt-6 space-y-5">
               <h3 className="text-[#004080] font-semibold mb-3 text-sm">Datos clínicos avanzados</h3>
 
               {[
@@ -277,19 +277,20 @@ export default function RegistroPaciente() {
               </div>
 
               {/* Paracetamol 1g 3 horas previas */}
-              <div className="flex gap-6 items-center text-sm">
-                <p>Paracetamol 1g 3 horas previas:</p>
-                <label className="flex items-center gap-1">
-                  <input type="radio" name="paracetamol_previo" value="Sí" checked={form.paracetamol_previo === 'Sí'} onChange={handleChange} />
-                  Sí
-                </label>
-                <label className="flex items-center gap-1">
-                  <input type="radio" name="paracetamol_previo" value="No" checked={form.paracetamol_previo === 'No'} onChange={handleChange} />
-                  No
-                </label>
+              <div className="space-y-2 text-sm">
+                <p className="font-medium text-gray-700">Paracetamol 1g 3 horas previas:</p>
+                <div className="flex gap-4">
+                  <label className="flex items-center gap-1">
+                    <input type="radio" name="paracetamol_previo" value="Sí" checked={form.paracetamol_previo === 'Sí'} onChange={handleChange} />
+                    Sí
+                  </label>
+                  <label className="flex items-center gap-1">
+                    <input type="radio" name="paracetamol_previo" value="No" checked={form.paracetamol_previo === 'No'} onChange={handleChange} />
+                    No
+                  </label>
+                </div>
               </div>
             </div>
-            
             {/* CAJA DE DATOS DEL MÉDICO */}
             <div className="border border-gray-200 rounded-xl p-4 shadow-sm bg-blue-50 mt-6">
               <h3 className="text-[#004080] font-semibold mb-3 text-sm">Datos del médico responsable</h3>
