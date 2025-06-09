@@ -18,6 +18,10 @@ export default function RegistroPaciente() {
     fecha_cirugia: '',
     nombre_medico: '',
     edad: '',
+    sexo: '',
+    peso: '',
+    altura: '',
+    imc: '',
     bloqueo: '',
     dosis_ketorolac: '',
     dosis_dexametasona: '',
@@ -32,9 +36,10 @@ export default function RegistroPaciente() {
   const [copiado, setCopiado] = useState(false)
   const [errores, setErrores] = useState<Partial<Record<string, string>>>({})
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value })
   }
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -113,6 +118,10 @@ export default function RegistroPaciente() {
       fecha_cirugia: '',
       nombre_medico: '',
       edad: '',
+      sexo: '',
+      peso: '',
+      altura: '',
+      imc: '',
       bloqueo: '',
       dosis_ketorolac: '',
       dosis_dexametasona: '',
@@ -151,10 +160,124 @@ export default function RegistroPaciente() {
         {!enviado ? (
           <form onSubmit={handleSubmit} className="space-y-7">
 
+            {/* CAMPOS INICIALES */}
             {[
               { name: 'nombre', label: 'Nombre completo', type: 'text' },
               { name: 'dni', label: 'DNI', type: 'text' },
-              { name: 'edad', label: 'Edad', type: 'number' },
+              { name: 'edad', label: 'Edad', type: 'number' }
+            ].map(({ name, label, type }) => (
+              <div key={name} className="relative">
+                <input
+                  type={type}
+                  name={name}
+                  value={(form as any)[name]}
+                  onChange={handleChange}
+                  required
+                  placeholder=" "
+                  autoComplete="off"
+                  className={`peer w-full px-3 pt-6 pb-2 border ${
+                    errores[name]
+                      ? 'border-red-500 shadow-sm shadow-red-100 animate-shake'
+                      : (form as any)[name].trim() === ''
+                      ? 'border-gray-300'
+                      : 'border-[#004080]'
+                  } rounded-xl bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#004080] transition-all`}
+                />
+                <label
+                  htmlFor={name}
+                  className="absolute left-3 top-2.5 text-sm text-gray-500 peer-focus:top-1 peer-focus:text-xs peer-focus:text-[#004080] peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 transition-all"
+                >
+                  {label}
+                </label>
+              </div>
+            ))}
+
+            {/* CAMPOS NUEVOS DE BLOQUE 2 */}
+            {/* SEXO */}
+            <div className="relative">
+              <select
+                name="sexo"
+                value={form.sexo}
+                onChange={handleChange}
+                required
+                className="peer w-full px-3 pt-6 pb-2 border border-gray-300 rounded-xl bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#004080] transition-all"
+              >
+                <option value="" disabled hidden>Seleccionar sexo</option>
+                <option value="Masculino">Masculino</option>
+                <option value="Femenino">Femenino</option>
+                <option value="Otro">Otro</option>
+              </select>
+              <label
+                htmlFor="sexo"
+                className="absolute left-3 top-2.5 text-sm text-gray-500 peer-focus:top-1 peer-focus:text-xs peer-focus:text-[#004080] peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 transition-all"
+              >
+                Sexo
+              </label>
+            </div>
+
+            {/* PESO */}
+            <div className="relative">
+              <input
+                type="number"
+                step="any"
+                name="peso"
+                value={form.peso}
+                onChange={(e) => {
+                  const peso = e.target.value
+                  const altura = form.altura.replace(',', '.')
+                  const imcCalc = peso && altura ? (parseFloat(peso.replace(',', '.')) / Math.pow(parseFloat(altura), 2)).toFixed(2) : ''
+                  setForm({ ...form, peso, imc: imcCalc })
+                }}
+                required
+                placeholder=" "
+                autoComplete="off"
+                className="peer w-full px-3 pt-6 pb-2 border border-gray-300 rounded-xl bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#004080] transition-all"
+              />
+              <label className="absolute left-3 top-2.5 text-sm text-gray-500 peer-focus:top-1 peer-focus:text-xs peer-focus:text-[#004080] peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 transition-all">
+                Peso (kg)
+              </label>
+            </div>
+
+            {/* ALTURA */}
+            <div className="relative">
+              <input
+                type="number"
+                step="any"
+                name="altura"
+                value={form.altura}
+                onChange={(e) => {
+                  const altura = e.target.value
+                  const peso = form.peso.replace(',', '.')
+                  const imcCalc = peso && altura ? (parseFloat(peso) / Math.pow(parseFloat(altura.replace(',', '.')), 2)).toFixed(2) : ''
+                  setForm({ ...form, altura, imc: imcCalc })
+                }}
+                required
+                placeholder=" "
+                autoComplete="off"
+                className="peer w-full px-3 pt-6 pb-2 border border-gray-300 rounded-xl bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#004080] transition-all"
+              />
+              <label className="absolute left-3 top-2.5 text-sm text-gray-500 peer-focus:top-1 peer-focus:text-xs peer-focus:text-[#004080] peer-placeholder-shown:top-4 peer-placeholder-shown:text-base peer-placeholder-shown:text-gray-400 transition-all">
+                Altura (m)
+              </label>
+            </div>
+
+            {/* IMC (solo lectura) */}
+            <div className="relative">
+              <input
+                type="text"
+                name="imc"
+                value={form.imc}
+                readOnly
+                placeholder=" "
+                className="w-full px-3 pt-6 pb-2 border border-gray-300 rounded-xl bg-gray-100 text-gray-600 cursor-not-allowed"
+              />
+              <label className="absolute left-3 top-2.5 text-sm text-gray-500">
+                IMC (calculado)
+              </label>
+            </div>
+
+            {/* SIGUE CON TELEFONO Y CIRUGÍA */}
+            {[
               { name: 'telefono', label: 'Teléfono de contacto', type: 'tel' },
               { name: 'cirugia', label: 'Tipo de cirugía', type: 'text' }
             ].map(({ name, label, type }) => (
