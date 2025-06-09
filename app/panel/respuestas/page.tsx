@@ -35,7 +35,25 @@ export default function PanelRespuestas() {
     altura?: number
     imc?: string
   }[]>([])
+  const [modoEdicion, setModoEdicion] = useState(false)
+  const [seleccionados, setSeleccionados] = useState<number[]>([])
 
+  const eliminarPacientes = async (ids: number[]) => {
+    const { error } = await supabase
+      .from('pacientes')
+      .delete()
+      .in('id', ids)
+
+    if (error) {
+      alert('❌ Error al eliminar pacientes')
+      console.error(error)
+    } else {
+      setPacientes(prev => prev.filter(p => !ids.includes(p.id)))
+      setRespuestas(prev => prev.filter(r => !ids.includes(r.paciente_id)))
+      setSeleccionados([])
+      setModoEdicion(false)
+    }
+  }
 
   useEffect(() => {
     const fetchDatos = async () => {
@@ -83,6 +101,18 @@ export default function PanelRespuestas() {
 
         <h1 className="text-2xl font-bold text-[#004080] mb-6">📄 Respuestas postoperatorias</h1>
 
+        <div className="mb-4">
+          <button
+            onClick={() => {
+              setModoEdicion(!modoEdicion)
+              setSeleccionados([]) // reset
+            }}
+            className="px-4 py-2 bg-[#004080] text-white rounded-lg shadow hover:bg-[#002e5c] transition"
+          >
+            {modoEdicion ? 'Cancelar edición' : '📝 Editar'}
+          </button>
+        </div>
+
         {cargando ? (
           <p className="text-gray-600">Cargando respuestas...</p>
         ) : respuestas.length === 0 ? (
@@ -128,24 +158,39 @@ export default function PanelRespuestas() {
                   className={`bg-white rounded-xl shadow border transition overflow-hidden ${estilos[nivel]}`}
                 >
                   <button
-                    onClick={() => setAbierto(estaAbierto ? null : r.id)}
+                    onClick={() => !modoEdicion && setAbierto(estaAbierto ? null : r.id)}
                     className={`w-full flex justify-between items-center p-4 text-left font-semibold ${estilos[nivel]} rounded-t-xl`}
                   >
-                    <div>
-                      <span>🧾 Seguimiento de {nombre}</span>
-                      <p className="text-sm text-gray-500">
-                        {cirugia} • {paciente?.edad ? `${paciente.edad} años` : 'Edad no registrada'}
-                      </p>
-                      <p className="text-sm text-gray-500">
-                        {paciente?.sexo && `Sexo: ${paciente.sexo}`} •{' '}
-                        {paciente?.peso && `Peso: ${paciente.peso}kg`} •{' '}
-                        {paciente?.altura && `Altura: ${paciente.altura}m`} •{' '}
-                        {paciente?.imc && (
-                          <span className={`font-semibold ${getIMCColor(paciente.imc)}`}>
-                            IMC: {paciente.imc}
-                          </span>
-                        )}
-                      </p>
+                    <div className="flex items-start gap-3">
+                      {modoEdicion && (
+                        <input
+                          type="checkbox"
+                          checked={seleccionados.includes(r.paciente_id)}
+                          onChange={(e) => {
+                            const nuevoSet = e.target.checked
+                              ? [...seleccionados, r.paciente_id]
+                              : seleccionados.filter((id) => id !== r.paciente_id)
+                            setSeleccionados(nuevoSet)
+                          }}
+                          className="mt-1 w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-[#004080]"
+                        />
+                      )}
+                      <div>
+                        <span>🧾 Seguimiento de {nombre}</span>
+                        <p className="text-sm text-gray-500">
+                          {cirugia} • {paciente?.edad ? `${paciente.edad} años` : 'Edad no registrada'}
+                        </p>
+                        <p className="text-sm text-gray-500">
+                          {paciente?.sexo && `Sexo: ${paciente.sexo}`} •{' '}
+                          {paciente?.peso && `Peso: ${paciente.peso}kg`} •{' '}
+                          {paciente?.altura && `Altura: ${paciente.altura}m`} •{' '}
+                          {paciente?.imc && (
+                            <span className={`font-semibold ${getIMCColor(paciente.imc)}`}>
+                              IMC: {paciente.imc}
+                            </span>
+                          )}
+                        </p>
+                      </div>
                     </div>
                     <span className="text-sm text-gray-500">
                       {new Date(r.fecha_respuesta).toLocaleString('es-AR', {
@@ -182,6 +227,20 @@ export default function PanelRespuestas() {
           </div>
         )}
       </div>
+      {modoEdicion && seleccionados.length > 0 && (
+        <div className="fixed bottom-6 right-6 bg-red-600 text-white px-5 py-3 rounded-xl shadow-xl z-50">
+          <button
+            onClick={() => {
+              if (confirm(`¿Estás seguro que deseas eliminar a ${seleccionados.length} pacientes?`)) {
+                eliminarPacientes(seleccionados)
+              }
+            }}
+            className="font-semibold hover:underline"
+          >
+            🗑️ Eliminar {seleccionados.length} pacientes
+          </button>
+        </div>
+      )}
     </main>
   )
 }
