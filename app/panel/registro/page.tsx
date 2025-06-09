@@ -70,6 +70,21 @@ export default function RegistroPaciente() {
       ...form,
       fecha_cirugia: `${y}-${m}-${d}`
     }
+    // Convertir dosis a float, aceptando coma o punto
+    const camposDosis = ['dosis_ketorolac', 'dosis_dexametasona', 'dosis_dexmedetomidina', 'dosis_ketamina']
+
+    camposDosis.forEach((campo) => {
+      const valor = form[campo as keyof typeof form]
+      paciente[campo] = parseFloat((valor as string).replace(',', '.'))
+    })
+
+    // Validar que las dosis sean números válidos
+    for (const campo of camposDosis) {
+      if (isNaN(paciente[campo])) {
+        alert(`⚠️ El campo ${campo.replace('dosis_', '').toUpperCase()} debe ser un número válido.`)
+        return
+      }
+    }
 
     const { data, error } = await supabase.from('pacientes').insert([paciente]).select()
     if (error || !data || !data[0]) {
