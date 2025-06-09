@@ -37,6 +37,7 @@ export default function PanelRespuestas() {
   }[]>([])
   const [modoEdicion, setModoEdicion] = useState(false)
   const [seleccionados, setSeleccionados] = useState<number[]>([])
+  const [mostrarConfirmacion, setMostrarConfirmacion] = useState(false)
 
   const eliminarPacientes = async (ids: number[]) => {
     const { error } = await supabase
@@ -228,17 +229,43 @@ export default function PanelRespuestas() {
         )}
       </div>
       {modoEdicion && seleccionados.length > 0 && (
-        <div className="fixed bottom-6 right-6 bg-red-600 text-white px-5 py-3 rounded-xl shadow-xl z-50">
+        <div className="fixed bottom-6 right-6 z-50">
           <button
-            onClick={() => {
-              if (confirm(`¿Estás seguro que deseas eliminar a ${seleccionados.length} pacientes?`)) {
-                eliminarPacientes(seleccionados)
-              }
-            }}
-            className="font-semibold hover:underline"
+            onClick={() => setMostrarConfirmacion(true)}
+            className="bg-red-600 text-white px-5 py-3 rounded-xl shadow-xl font-semibold hover:bg-red-700 transition"
           >
             🗑️ Eliminar {seleccionados.length} pacientes
           </button>
+        </div>
+      )}
+      {mostrarConfirmacion && (
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
+          <div className="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6 text-center border border-gray-200">
+            <div className="text-red-600 text-4xl mb-3">🗑️</div>
+            <h2 className="text-xl font-semibold text-gray-800 mb-2">
+              ¿Eliminar {seleccionados.length} paciente{seleccionados.length > 1 ? 's' : ''}?
+            </h2>
+            <p className="text-sm text-gray-600 mb-6">
+              Esta acción es permanente y no se puede deshacer.
+            </p>
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={() => {
+                  eliminarPacientes(seleccionados)
+                  setMostrarConfirmacion(false)
+                }}
+                className="bg-red-600 text-white px-4 py-2 rounded-lg shadow hover:bg-red-700 transition"
+              >
+                Confirmar
+              </button>
+              <button
+                onClick={() => setMostrarConfirmacion(false)}
+                className="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition"
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </main>
