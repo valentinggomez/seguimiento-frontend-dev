@@ -200,7 +200,13 @@ export default function RegistroPaciente() {
                 value={form.sexo}
                 onChange={handleChange}
                 required
-                className="peer w-full px-3 pt-6 pb-2 border border-gray-300 rounded-xl bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#004080] transition-all"
+                className={`peer w-full px-3 pt-6 pb-2 border ${
+                  errores.sexo
+                    ? 'border-red-500 shadow-sm shadow-red-100 animate-shake'
+                    : form.sexo === ''
+                    ? 'border-gray-300'
+                    : 'border-[#004080]'
+                } rounded-xl bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#004080] transition-all`}
               >
                 <option value="" disabled hidden>Seleccionar sexo</option>
                 <option value="Masculino">Masculino</option>
