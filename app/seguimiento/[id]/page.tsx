@@ -20,6 +20,7 @@ const preguntas = [
   '¿Requirió medicación adicional?',
   '¿Despertó por dolor?',
   '¿Cómo calificaría la atención recibida?',
+  '¿A cuántas horas pudo mover con normalidad la/s extremidades?',
   '¿Desea dejar alguna observación?'
 ]
 
@@ -195,12 +196,25 @@ export default function SeguimientoPaciente() {
               </select>
             </div>
 
-            {/* Observaciones (textarea) */}
+            {/* Horas para mover extremidades */}
             <div>
               <label className="block text-gray-700 font-medium mb-1">{preguntas[9]}</label>
-              <textarea
+              <input
+                type="number"
+                min={0}
                 value={respuestas[9]}
                 onChange={e => handleChange(9, e.target.value)}
+                required
+                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+
+            {/* Observaciones (textarea) */}
+            <div>
+              <label className="block text-gray-700 font-medium mb-1">{preguntas[10]}</label>
+              <textarea
+                value={respuestas[10]}
+                onChange={e => handleChange(10, e.target.value)}
                 required
                 rows={3}
                 className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
