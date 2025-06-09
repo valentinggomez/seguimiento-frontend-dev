@@ -412,14 +412,20 @@ export default function RegistroPaciente() {
               <div className="space-y-2 text-sm">
                 <p className="font-medium text-gray-700">Paracetamol 1g 3 horas previas:</p>
                 <div className="flex gap-4">
-                  <label className="flex items-center gap-1">
-                    <input type="radio" name="paracetamol_previo" value="Sí" checked={form.paracetamol_previo === 'Sí'} onChange={handleChange} />
-                    Sí
-                  </label>
-                  <label className="flex items-center gap-1">
-                    <input type="radio" name="paracetamol_previo" value="No" checked={form.paracetamol_previo === 'No'} onChange={handleChange} />
-                    No
-                  </label>
+                  {['Sí', 'No'].map((valor) => (
+                    <button
+                      key={valor}
+                      type="button"
+                      onClick={() => setForm({ ...form, paracetamol_previo: valor })}
+                      className={`px-4 py-2 rounded-xl border text-sm font-medium transition-all ${
+                        form.paracetamol_previo === valor
+                          ? 'bg-[#004080] text-white border-[#004080]'
+                          : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                      }`}
+                    >
+                      {valor}
+                    </button>
+                  ))}
                 </div>
               </div>
             </div>
