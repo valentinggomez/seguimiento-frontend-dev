@@ -18,10 +18,9 @@ export default function Inicio() {
           <img
             src="/udap-logo.jpg"
             alt="UDAP - Unidad de Dolor Agudo Postoperatorio"
-            className="w-48 h-auto object-contain"
+            className="w-48 sm:w-64 md:w-72 h-auto object-contain"
           />
         </div>
-
 
         <div className="space-y-6">
           <motion.button
