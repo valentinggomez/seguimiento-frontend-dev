@@ -25,7 +25,7 @@ export default function PanelRespuestas() {
   const [respuestas, setRespuestas] = useState<Respuesta[]>([])
   const [cargando, setCargando] = useState(true)
   const [abierto, setAbierto] = useState<number | null>(null)
-  const [pacientes, setPacientes] = useState<{ id: number; nombre: string; cirugia: string }[]>([])
+  const [pacientes, setPacientes] = useState<{ id: number; nombre: string; cirugia: string; edad?: number }[]>([])
 
   useEffect(() => {
     const fetchDatos = async () => {
@@ -38,7 +38,7 @@ export default function PanelRespuestas() {
       // Traer pacientes
       const { data: pacientesData, error: errorPacientes } = await supabase
         .from('pacientes')
-        .select('id, nombre, cirugia')
+        .select('id, nombre, cirugia, edad')
 
       if (!errorRespuestas && respuestasData) {
         setRespuestas(respuestasData)
@@ -115,7 +115,9 @@ export default function PanelRespuestas() {
                   >
                     <div>
                       <span>🧾 Seguimiento de {nombre}</span>
-                      <p className="text-sm text-gray-500">{cirugia}</p>
+                      <p className="text-sm text-gray-500">
+                        {cirugia} • {paciente?.edad ? `${paciente.edad} años` : 'Edad no registrada'}
+                      </p>
                     </div>
                     <span className="text-sm text-gray-500">
                       {new Date(r.fecha_respuesta).toLocaleString('es-AR', {
