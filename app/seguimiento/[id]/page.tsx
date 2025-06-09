@@ -60,6 +60,11 @@ export default function SeguimientoPaciente() {
         errores.push(`La respuesta de dolor "${preguntas[i]}" debe ser un número entre 0 y 10.`);
       }
     }
+    
+    const satisfaccion = Number(respuestas[8]);
+    if (isNaN(satisfaccion) || satisfaccion < 1 || satisfaccion > 10) {
+      errores.push('La satisfacción debe ser un número entre 1 y 10.');
+    }
 
     if (respuestas[10] && respuestas[10].length > 500) {
       errores.push('La observación no puede superar los 500 caracteres.');
@@ -182,18 +187,25 @@ export default function SeguimientoPaciente() {
               </div>
             ))}
 
-            {/* Satisfacción (1 a 5) */}
+            {/* Satisfacción (1 a 10) */}
             <div>
               <label className="block text-gray-700 font-medium mb-1">{preguntas[8]}</label>
-              <select
+              <input
+                type="number"
+                min={1}
+                max={10}
                 value={respuestas[8]}
                 onChange={e => handleChange(8, e.target.value)}
                 required
-                className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="">Seleccionar</option>
-                {[1, 2, 3, 4, 5].map(n => <option key={n} value={String(n)}>{n}</option>)}
-              </select>
+                className={`w-full p-3 border rounded-lg focus:ring-2 transition-all ${
+                  respuestas[8] !== '' && (Number(respuestas[8]) < 1 || Number(respuestas[8]) > 10)
+                    ? 'border-red-500 ring-red-400 focus:ring-red-400'
+                    : 'border-gray-300 focus:ring-blue-500'
+                }`}
+              />
+              {respuestas[8] !== '' && (Number(respuestas[8]) < 1 || Number(respuestas[8]) > 10) && (
+                <p className="text-red-600 text-sm mt-1">Debe ingresar un número entre 1 y 10</p>
+              )}
             </div>
 
             {/* Horas para mover extremidades */}
